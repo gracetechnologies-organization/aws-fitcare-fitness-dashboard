@@ -9,6 +9,8 @@ use App\Models\Level;
 use App\Models\Week;
 use App\Models\Program;
 use App\Models\SubCategory;
+use App\Services\ImageManipulationClass;
+use App\Services\VideoManipulationClass;
 use Carbon\Carbon;
 use Exception;
 use Livewire\Component;
@@ -258,8 +260,8 @@ class ManageActiveExercises extends Component
                 'ex_description' => $this->ex_description,
                 'ex_duration' => $this->ex_duration,
                 'ex_gender' => $this->ex_gender,
-                'ex_thumbnail_url' => $this->getImgURL(),
-                'ex_video_url' => $this->getVideoURL(),
+                'ex_thumbnail_url' => ImageManipulationClass::getImgURL($this->ex_thumbnail, 'images/exercises'),
+                'ex_video_url' => VideoManipulationClass::getVideoURL($this->ex_video, 'videos/exercises'),
             ]);
             foreach ($this->meta_info as $singel_index) {
                 $inserted_relations = ExerciseRelation::create([
@@ -443,7 +445,7 @@ class ManageActiveExercises extends Component
             session()->flash('error', config('messages.INVALID_DATA'));
         }
     }
-
+    
     public function delMetaInfoRowFromDb(int $rel_id = null, int $index)
     {
         try {
@@ -463,29 +465,29 @@ class ManageActiveExercises extends Component
         }
     }
 
-    public function getImgURL()
-    {
-        $this->ex_thumbnail_url = Carbon::now()->timestamp . "_" . $this->ex_thumbnail->getClientOriginalName();
-        /*
-        |--------------------------------------------------------------------------
-        | Save the image to the default storage path "storage/app/public/images"
-        |--------------------------------------------------------------------------
-        */
-        $this->ex_thumbnail->storeAs('public/images', $this->ex_thumbnail_url);
-        return $this->ex_thumbnail_url;
-    }
+    // public function getImgURL()
+    // {
+    //     $this->ex_thumbnail_url = Carbon::now()->timestamp . "_" . $this->ex_thumbnail->getClientOriginalName();
+    //     /*
+    //     |--------------------------------------------------------------------------
+    //     | Save the image to the default storage path "storage/app/public/images"
+    //     |--------------------------------------------------------------------------
+    //     */
+    //     $this->ex_thumbnail->storeAs('public/images', $this->ex_thumbnail_url);
+    //     return $this->ex_thumbnail_url;
+    // }
 
-    public function getVideoURL()
-    {
-        $this->ex_video_url = Carbon::now()->timestamp . "_" . $this->ex_video->getClientOriginalName();
-        /*
-        |--------------------------------------------------------------------------
-        | Save the video to the default storage path "storage/app/public/videos"
-        |--------------------------------------------------------------------------
-        */
-        $this->ex_video->storeAs('public/videos', $this->ex_video_url);
-        return $this->ex_video_url;
-    }
+    // public function getVideoURL()
+    // {
+    //     $this->ex_video_url = Carbon::now()->timestamp . "_" . $this->ex_video->getClientOriginalName();
+    //     /*
+    //     |--------------------------------------------------------------------------
+    //     | Save the video to the default storage path "storage/app/public/videos"
+    //     |--------------------------------------------------------------------------
+    //     */
+    //     $this->ex_video->storeAs('public/videos', $this->ex_video_url);
+    //     return $this->ex_video_url;
+    // }
 
     public function addMetaInfoRow()
     {

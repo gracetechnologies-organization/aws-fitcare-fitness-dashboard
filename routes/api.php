@@ -24,8 +24,6 @@ Route::prefix('exercises')->group(function () {
     Route::get('/neck_workouts', [ExercisesController::class, 'listAllDataNeckWorkout']);
     /** Route For All Categories **/
     Route::get('/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId']);
-    /** Route For Authentication Testing - We Will Implement This In Future **/
-    Route::get('test/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId'])->middleware('auth.api.reqs');
 });
 
 Route::prefix('firebase')->group(function () {

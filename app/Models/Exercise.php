@@ -31,25 +31,35 @@ class Exercise extends Model
         return $this->hasMany(ExerciseRelation::class, 'ex_id');
     }
 
-    public function categories()
+    // public function categories()
+    // {
+    //     return $this->belongsToMany(Category::class, 'exercise_relations', 'ex_id', 'cat_id')->withPivot('cat_id');
+    // }
+
+    public function workouts()
     {
-        return $this->belongsToMany(Category::class, 'exercise_relations', 'ex_id', 'cat_id')->withPivot('cat_id');
+        return $this->belongsToMany(Workout::class, 'exercise_relations', 'ex_id', 'workout_id')->withPivot('workout_id');
     }
 
-    public function subCategories()
-    {
-        return $this->belongsToMany(SubCategory::class, 'exercise_relations', 'ex_id', 'sub_cat_id')->withPivot('cat_id');
-    }
+    // public function subCategories()
+    // {
+    //     return $this->belongsToMany(SubCategory::class, 'exercise_relations', 'ex_id', 'sub_cat_id')->withPivot('cat_id');
+    // }
 
     public function levels()
     {
-        return $this->belongsToMany(Level::class, 'exercise_relations', 'ex_id', 'level_id')->withPivot('cat_id');
+        return $this->belongsToMany(Level::class, 'exercise_relations', 'ex_id', 'level_id')->withPivot('workout_id');
     }
 
-    public function programs()
+    public function weeks()
     {
-        return $this->belongsToMany(Program::class, 'exercise_relations', 'ex_id', 'program_id')->withPivot('cat_id');
+        return $this->belongsToMany(Week::class, 'exercise_relations', 'ex_id', 'week_id')->withPivot('workout_id');
     }
+
+    // public function programs()
+    // {
+    //     return $this->belongsToMany(Program::class, 'exercise_relations', 'ex_id', 'program_id')->withPivot('cat_id');
+    // }
 
     /*
     |--------------------------------------------------------------------------
@@ -75,6 +85,16 @@ class Exercise extends Model
         });
     }
 
+    public static function getWorkoutsArray(Collection $collection): object
+    {
+        return $collection->map(function ($workout) {
+            return [
+                'workout_id' => $workout->id,
+                'workout_name' => $workout->name
+            ];
+        });
+    }
+
     public static function getSubCategoriesArray(Collection $collection): object
     {
         return $collection->map(function ($sub_categories) {
@@ -92,10 +112,18 @@ class Exercise extends Model
     {
         return $collection->map(function ($level) {
             return [
-                'ex_level_id' => $level->id,
-                'ex_level_name' => $level->name,
-                'created_at' => $level->created_at,
-                'updated_at' => $level->updated_at,
+                'level_id' => $level->id,
+                'level_name' => $level->name
+            ];
+        });
+    }
+
+    public static function getWeeksArray(Collection $collection): object
+    {
+        return $collection->map(function ($week) {
+            return [
+                'week_id' => $week->id,
+                'week_name' => $week->name
             ];
         });
     }
@@ -118,13 +146,15 @@ class Exercise extends Model
             return [
                 'ex_relation_id' => $relation->id,
                 'ex_id' => $relation->ex_id,
-                'cat_id' => $relation->cat_id,
+                'workout_id' => $relation->workout_id,
+                // 'cat_id' => $relation->cat_id,
                 'level_id' => $relation->level_id,
-                'program_id' => $relation->program_id,
+                'week_id' => $relation->week_id,
+                // 'program_id' => $relation->program_id,
                 'from_day' => $relation->from_day,
                 'till_day' => $relation->till_day,
-                'created_at' => $relation->created_at,
-                'updated_at' => $relation->updated_at,
+                // 'created_at' => $relation->created_at,
+                // 'updated_at' => $relation->updated_at,
             ];
         });
     }
@@ -294,43 +324,51 @@ class Exercise extends Model
     public static function fetchExercisesByGivenParams(object $req)
     {
         $data = [];
-        $cat_id = (int) $req->query('cat_id');
-        $sub_cat_id = (int) $req->query('sub_cat_id');
+        $workout_id = (int) $req->query('workout_id');
         $level_id = (int) $req->query('level_id');
-        $program_id = (int) $req->query('program_id');
+        $week_id = (int) $req->query('week_id');
+        // $program_id = (int) $req->query('program_id');
         $from_day = (int) $req->query('from_day');
-        $exercises = Exercise::whereHas('exerciseRelations', function ($query) use ($cat_id, $sub_cat_id, $level_id, $program_id, $from_day) {
-            $query->where('cat_id', $cat_id)
-                ->when($sub_cat_id, function ($query, $sub_cat_id) {
-                    return $query->where('sub_cat_id', $sub_cat_id);
-                })
+        $till_day = (int) $req->query('till_day');
+        $exercises = Exercise::whereHas('exerciseRelations', function ($query) use ($workout_id, $level_id, $week_id, $from_day, $till_day) {
+            $query->where('workout_id', $workout_id)
                 ->when($level_id, function ($query, $level_id) {
                     return $query->where('level_id', $level_id);
                 })
-                ->when($program_id, function ($query, $program_id) {
-                    return $query->where('program_id', $program_id);
+                ->when($week_id, function ($query, $week_id) {
+                    return $query->where('week_id', $week_id);
                 })
-                ->when($from_day, function ($query, $from_day) {
-                    return $query->where('from_day', '<=', $from_day)
-                        ->where('till_day', '>=', $from_day);
+                // ->when($program_id, function ($query, $program_id) {
+                //     return $query->where('program_id', $program_id);
+                // })
+                // ->when($from_day, function ($query, $from_day, $till_day) {
+                //     return $query->where('from_day', '=', $from_day)
+                //         ->where('till_day', '>=', $till_day);
+                // });
+                ->when($from_day && $till_day, function ($query) use ($from_day, $till_day) {
+                    return $query->where('from_day', '=', $from_day)
+                                 ->where('till_day', '>=', $till_day);
                 });
         })
             ->with([
-                'exerciseRelations' => function ($query) use ($cat_id) {
-                    $query->where('cat_id', $cat_id);
+                'exerciseRelations' => function ($query) use ($workout_id) {
+                    $query->where('workout_id', $workout_id);
                 },
-                'categories' => function ($query) use ($cat_id) {
-                    $query->where('cat_id', $cat_id)->distinct();
+                'workouts' => function ($query) use ($workout_id) {
+                    $query->where('workout_id', $workout_id)->distinct();
                 },
-                'subCategories' => function ($query) use ($cat_id) {
-                    $query->where('cat_id', $cat_id);
+                'levels' => function ($query) use ($workout_id) {
+                    $query->where('workout_id', $workout_id);
                 },
-                'levels' => function ($query) use ($cat_id) {
-                    $query->where('cat_id', $cat_id);
-                },
-                'programs' => function ($query) use ($cat_id) {
-                    $query->where('cat_id', $cat_id);
+                'weeks' => function ($query) use ($workout_id) {
+                    $query->where('workout_id', $workout_id);
                 }
+                // 'subCategories' => function ($query) use ($cat_id) {
+                //     $query->where('cat_id', $cat_id);
+                // },
+                // 'programs' => function ($query) use ($cat_id) {
+                //     $query->where('cat_id', $cat_id);
+                // }
             ])
             ->where('is_active', 1)
             ->orderByDesc('created_at')
@@ -343,16 +381,19 @@ class Exercise extends Model
                 'ex_title' => $single_exercise->ex_name,
                 'ex_description' => $single_exercise->ex_description,
                 'ex_duration' => $single_exercise->ex_duration,
-                'video_thumbnail' => asset('storage/images/' . str_replace(" ", "%20", $single_exercise->ex_thumbnail_url)),
-                'video_url_path' => asset('storage/videos/' . str_replace(" ", "%20", $single_exercise->ex_video_url)),
+                'ex_gender' => $single_exercise->ex_gender,
+                'video_thumbnail' => asset('uploads/images/exercises/' . $single_exercise->ex_thumbnail_url),
+                'video_url_path' => asset('uploads/videos/exercises/' . $single_exercise->ex_video_url),
                 'is_active' => $single_exercise->is_active,
-                'created_at' => $single_exercise->created_at,
-                'updated_at' => $single_exercise->updated_at,
-                'deleted_at' => $single_exercise->deleted_at,
-                'category' => static::getCategoriesArray($single_exercise->categories),
-                'sub_category' => static::getSubCategoriesArray($single_exercise->subCategories),
+                // 'created_at' => $single_exercise->created_at,
+                // 'updated_at' => $single_exercise->updated_at,
+                // 'deleted_at' => $single_exercise->deleted_at,
+                // 'category' => static::getCategoriesArray($single_exercise->categories),
+                // 'sub_category' => static::getSubCategoriesArray($single_exercise->subCategories),
+                'workouts' => static::getWorkoutsArray($single_exercise->workouts),
                 'levels' => static::getLevelsArray($single_exercise->levels),
-                'programs' => static::getProgramsArray($single_exercise->programs),
+                'weeks' => static::getWeeksArray($single_exercise->weeks),
+                // 'programs' => static::getProgramsArray($single_exercise->programs),
                 'days' => static::getDaysArray($single_exercise->exerciseRelations)
             ]);
         }

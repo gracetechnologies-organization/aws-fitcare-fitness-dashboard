@@ -73,7 +73,7 @@ class ExercisesController extends Controller
     {
         try {
             $Validator = Validator::make($req->all(), [
-                'cat_id' => 'required|integer'
+                'workout_id' => 'required|integer'
             ]);
             if ($Validator->fails()) {
                 return CustomResponseClass::JsonResponse(

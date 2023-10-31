@@ -17,6 +17,9 @@
     <link href="{{ asset('dashboard/vendor/fonts/fontawesome-free-6.4.2-web/css/brands.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dashboard/vendor/fonts/fontawesome-free-6.4.2-web/css/solid.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dashboard/vendor/fonts/fontawesome-free-6.4.2-web/css/regular.min.css') }}" rel="stylesheet">
+    <!-- Only using boxicon bcz the mobile bx-menu button works properly with it -->
+    <link rel="stylesheet" href="{{ asset('dashboard/vendor/fonts/boxicons.css') }}" />
+
     <!-- Core CSS (It is basically Bootstap 5) - Make your general custom CSS changes in the core.css file -->
     <link rel="stylesheet" href="{{ asset('dashboard/vendor/css/core.css') }}" />
     <link rel="stylesheet" href="{{ asset('dashboard/vendor/css/theme-default.css') }}" />
@@ -34,10 +37,10 @@
         <link rel="stylesheet" href="{{ asset('dashboard/css/custom-styles.css') }}">
     @endif
     <!-- Helpers -->
-    <script src="{{ asset('dashboard/vendor/js/helpers.js') }}"></script>
+    <script src="{{ asset('dashboard/vendor/js/helpers.js') }}" defer></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js')}} in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="{{ asset('dashboard/js/config.js') }}"></script>
+    <script src="{{ asset('dashboard/js/config.js') }}" defer></script>
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     @stack('head')

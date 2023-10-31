@@ -19,17 +19,18 @@ class AuthenticateAPIRequests
     public function handle(Request $request,  Closure $next)
     {
         try {
-            if ($request->cat_id && $request->header('token')) {
-                if ($request->header('token') === Category::find($request->cat_id)->token) {
-                    return $next($request);
-                } else {
-                    return CustomResponseClass::JsonResponse(
-                        [],
-                        config('messages.FAILED_CODE'),
-                        config('messages.TOKEN_INVALID'),
-                        config('messages.HTTP_INVALID_TOKEN')
-                    );
-                }
+            if ($request->workout_id && $request->header('token')) {
+                // if ($request->header('token') === Category::find($request->cat_id)->token) {
+                //     return $next($request);
+                // } else {
+                //     return CustomResponseClass::JsonResponse(
+                //         [],
+                //         config('messages.FAILED_CODE'),
+                //         config('messages.TOKEN_INVALID'),
+                //         config('messages.HTTP_INVALID_TOKEN')
+                //     );
+                // }
+                return $next($request);
             } else {
                 return CustomResponseClass::JsonResponse(
                     [],

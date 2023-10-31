@@ -109,8 +109,9 @@
                                 </small>
                             </div>
                         </div>
+                        {{-- Meta Info Section --}}
                         <div class="row">
-                            <label for="ex_category_id" class="form-label">Workouts</label>
+                            <label class="form-label">Workouts</label>
                             @foreach ($meta_info as $single_index => $value)
                                 <div class="input-group mb-3">
                                     <div class="col-12 col-lg-3">
@@ -288,10 +289,36 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col mb-3">
+                                <label class="form-label">Gender*</label>
+                                    <div class="input-group mb-3">
+                                        <select wire:model.lazy="ex_gender" class="form-select">
+                                            <option selected value="">Select Gender*</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary" wire:loading.class="btn-dark"
+                                            wire:loading.class.remove="btn-primary" wire:loading.attr="disabled"
+                                            wire:click="updateGender">
+                                            <span wire:loading.remove wire:target="ex_gender">Update Duration</span>
+                                            <span wire:loading wire:target="ex_gender">
+                                                <span class="spinner-border spinner-border-sm" role="status"
+                                                    aria-hidden="true"></span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                <small class="text-danger">
+                                    @error('ex_gender')
+                                        {{ $message }}
+                                    @enderror
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-12 col-md-12 col-lg-6 mb-3">
                                 <label for="ex_thumbnail" class="form-label">Thumbnail*</label>
                                 <div class="exercise-thumbnail-col">
-                                    <img src="{{ asset('storage/images/' . $ex_thumbnail_url) }}" class="exercise-thumbnail">
+                                    <img src="{{ asset('uploads/images/exercises/' . $ex_thumbnail_url) }}" class="exercise-thumbnail">
                                 </div>
                                 <div class="input-group mb-3">
                                     <input type="file"
@@ -316,7 +343,7 @@
                             <div class="col-12 col-md-12 col-lg-6 mb-3">
                                 <label for="ex_video" class="form-label">Video*</label>
                                 <div class="exercise-video-col">
-                                    <video src="{{ asset('storage/videos/' . $ex_video_url) }}" controls class="exercise-video"></video>
+                                    <video src="{{ asset('uploads/videos/exercises/' . $ex_video_url) }}" controls class="exercise-video"></video>
                                 </div>
                                 <div class="input-group mb-3">
                                     <input type="file" accept="video/*" wire:model.defer="ex_video"
@@ -488,14 +515,13 @@
                         <tr>
                             <td>{{ $single_index->id }}</td>
                             <td>
-                                <img src="{{ asset('storage/images/' . $single_index->ex_thumbnail_url) }}"
-                                    width="120px">
+                                <img src="{{ asset('uploads/images/exercises/' . $single_index->ex_thumbnail_url) }}" width="120px">
                             </td>
                             <td>{{ $single_index->ex_name }}</td>
                             <td>{{ \Illuminate\Support\Str::limit($single_index->ex_description, 40, '...') }}</td>
                             <td>{{ $single_index->ex_duration }}</td>
                             <td>
-                                <a href="{{ asset('storage/videos/' . $single_index->ex_video_url) }}"
+                                <a href="{{ asset('uploads/videos/exercises/' . $single_index->ex_video_url) }}"
                                     target="_blank" title="Play Video">
                                     <i class='bx bx-play bx-lg text-dark'></i>
                                 </a>
