@@ -60,12 +60,26 @@
                             </div>
                             <div class="row">
                                 <div class="col-12 mb-3">
+                                    <label class="form-label">Gender*</label>
+                                    <select wire:model.lazy="workout_gender" class="form-select">
+                                        <option value="" selected>Select gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                    </select>
+                                    <small class="text-danger">
+                                        @error('workout_gender')
+                                            {{ $message }}
+                                        @enderror
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 mb-3">
                                     <label class="form-label">Focused Areas*</label>
                                     <div>
                                         @foreach ($focused_areas as $single_index => $value)
                                             <div class="form-check form-check-inline">
-                                                <input type="checkbox" class="form-check-input" 
-                                                wire:model.lazy="workout_focused_areas.{{ $single_index }}" id="focusedArea{{ $value->id }}" value="{{ $value->id }}">
+                                                <input type="checkbox" class="form-check-input" wire:model.lazy="workout_focused_areas.{{ $single_index }}" id="focusedArea{{ $value->id }}" value="{{ $value->id }}">
                                                 <label class="form-check-label" for="focusedArea{{ $value->id }}">{{ $value->name }}</label>
                                             </div>
                                         @endforeach
@@ -107,11 +121,56 @@
                 <form>
                     <div class="modal-body">
                         <div class="row">
+                            <div class="col-12 mb-3">
+                                <img src="{{ asset('uploads/images/workouts/' . $workout_thumbnail) }}" width="200px">
+                                <label class="form-label">Thumbnail*</label>
+                                <input type="file" accept="image/png, image/jpeg, image/jpg" wire:model.defer="workout_thumbnail" class="form-control">
+                                <small class="text-danger">
+                                    @error('workout_thumbnail')
+                                        {{ $message }}
+                                    @enderror
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col mb-3">
-                                <label class="form-label">Workout</label>
-                                <input type="text" placeholder="Enter workout name" value="{{ $workout }}" wire:model.lazy="workout" class="form-control">
+                                <label class="form-label">Name*</label>
+                                <input type="text" placeholder="Enter workout name" value="{{ $workout }}" wire:model.defer="workout" class="form-control">
                                 <small class="text-danger">
                                     @error('workout')
+                                        {{ $message }}
+                                    @enderror
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Gender*</label>
+                                <select wire:model.lazy="workout_gender" class="form-select">
+                                    <option value="male" @if ($workout_gender == 'male') selected @endif>Male</option>
+                                    <option value="female" @if ($workout_gender == 'female') selected @endif>Female</option>
+                                </select>
+                                <small class="text-danger">
+                                    @error('workout_gender')
+                                        {{ $message }}
+                                    @enderror
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Focused Areas*</label>
+                                <div>
+                                    @foreach ($focused_areas as $single_index => $value)
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" wire:model.defer="workout_focused_areas" id="focusedArea{{ $value->id }}" 
+                                            value="{{ $value->id }}">
+                                            <label class="form-check-label" for="focusedArea{{ $value->id }}">{{ $value->name }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <small class="text-danger">
+                                    @error('workout_focused_areas')
                                         {{ $message }}
                                     @enderror
                                 </small>
@@ -218,7 +277,7 @@
 
                         {{-- Increment $i to add different id in all child components --}}
                         {{-- @dd($single_index) --}}
-                        
+
                         <tr>
                             <td colspan="4" class="sub-category-bg">
                                 <div class="accordion accordion-flush" id="accordionFlush{{ $single_index->id }}">
@@ -236,7 +295,7 @@
                                                         <table class="table table-hover">
                                                             <tbody class="table-border-bottom-0">
                                                                 @foreach ($single_index->focused_areas as $single_relation)
-                                                                {{-- @dd($single_relation) --}}
+                                                                    {{-- @dd($single_relation) --}}
                                                                     <tr>
                                                                         <td>
                                                                             {{-- <a href="{{ route('emp.exercises.active', ['cat_id' => 3, 'sub_cat_id' => 1]) }}">
@@ -265,7 +324,7 @@
                                 </div>
                             </td>
                         </tr>
-                       
+
                     @empty
                         <tr class="alert alert-warning alert-dismissible text-center rounded-bottom">
                             <td colspan="5" class="text-center">No Record Found.</td>

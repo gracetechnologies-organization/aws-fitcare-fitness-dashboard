@@ -19,6 +19,16 @@ class Exercise extends Model
         'ex_thumbnail_url',
         'ex_video_url',
     ];
+    /**
+     * The attributes that should be hidden for arrays/JSON
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
     /*
     |--------------------------------------------------------------------------

@@ -18,6 +18,7 @@ class WorkoutFactory extends Factory
     {
         return [
             'name' => ucfirst($this->faker->unique()->word),
+            'gender' => $this->faker->randomElement(['male', 'female']),
             'thumbnail_url' => $this->faker->randomElement(['workout1.jpg', 'workout2.jpg', 'workout3.jpg', 'workout4.jpg', 'workout5.png']),
         ];
     }

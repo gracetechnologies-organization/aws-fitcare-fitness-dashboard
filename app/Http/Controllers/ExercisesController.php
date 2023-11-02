@@ -7,12 +7,6 @@ use App\Services\CustomResponseClass;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Kreait\Laravel\Firebase\Facades\Firebase;
-use Kreait\Firebase\RemoteConfig;
-use Kreait\Firebase\RemoteConfig\Parameter;
-use Kreait\Firebase\RemoteConfig\ParameterGroup;
-use Kreait\Firebase\RemoteConfig\Template;
-use Kreait\Firebase\Value;
 
 class ExercisesController extends Controller
 {
@@ -99,34 +93,4 @@ class ExercisesController extends Controller
             );
         }
     }
-
-    // public function fireBaseRemoteConfig()
-    // {
-    //     $token = '999e73ce-61e0-431b-84c5-dddc01bf9947';
-
-    //     $parameter = Parameter::named('token')->withDefaultValue($token);
-    //     $template = Template::new()->withParameter($parameter);
-
-    //     $remoteConfig = Firebase::project('app1')->remoteConfig(); 
-    //     $remoteConfig->publish($template);
-    // }
-
-    // public function fireBaseRemoteConfigParamGroup()
-    // {
-    //     $parameterGroup = ParameterGroup::named('Token')->withParameter(Parameter::named('t')->withDefaultValue('blue'));
-
-    //     $template = Template::new()->withParameterGroup($parameterGroup); 
-
-    //     $remoteConfig = Firebase::project('app1')->remoteConfig();
-    //     $remoteConfig->publish($template);
-    // }
-
-    // public function fireBaseRemoteConfigRemove()
-    // {
-    //     $token = 'token';
-    //     $template = Template::new()->withRemovedParameter($token);
-
-    //     $remoteConfig = Firebase::project('app1')->remoteConfig();
-    //     $remoteConfig->publish($template);
-    // }
 }

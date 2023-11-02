@@ -6,7 +6,7 @@
              <div class="app-brand demo">
                  <a href="{{ route('admin.index') }}" class="app-brand-link">
                      <span class="app-brand-logo demo">
-                         <img src="{{ asset('storage/images/logo.jpg') }}" alt="logo" class="img-thumbnail"
+                         <img src="{{ asset(config('constants.LOGO_LOCATION')) }}" alt="logo" class="img-thumbnail"
                              width="90px">
                      </span>
                  </a>

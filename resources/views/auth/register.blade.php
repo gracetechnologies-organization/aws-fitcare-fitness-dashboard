@@ -2,7 +2,7 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/register">
-                <img src="{{ asset('storage/images/logo.jpg') }}" alt="rooftop lounge logo" class="form_logo">
+                <img src="{{ asset(config('constants.LOGO_LOCATION')) }}" alt="rooftop lounge logo" class="form_logo">
             </a>
         </x-slot>
 

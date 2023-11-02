@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             TokenSeeder::class,
             FocusedAreaSeeder::class,
             WorkoutSeeder::class,
-            WorkoutFocusedAreaSeeder::class
+            WorkoutFocusedAreaSeeder::class,
+            WeekSeeder::class
         ]);
     }
 }

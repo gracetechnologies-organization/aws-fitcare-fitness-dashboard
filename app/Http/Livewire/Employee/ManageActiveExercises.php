@@ -173,6 +173,7 @@ class ManageActiveExercises extends Component
         $this->ex_name = '';
         $this->ex_description = '';
         $this->ex_duration = '';
+        $this->ex_gender = '';
         $this->ex_thumbnail_url = '';
         $this->ex_thumbnail = '';
         $this->ex_video_url = '';
@@ -187,7 +188,7 @@ class ManageActiveExercises extends Component
         /*
         |--------------------------------------------------------------------------
         | Again assigning values to the '0' index of $meta_info array so that it  
-        | Will not through any error while opening the modal 
+        | Could not throw any error while opening the modal 
         |--------------------------------------------------------------------------
         */
         $this->meta_info = [

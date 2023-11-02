@@ -13,7 +13,7 @@ class WorkoutFocusedArea extends Model
         'workout_id',
         'focused_area_id'
     ];
-     /*
+    /*
     |--------------------------------------------------------------------------
     | ORM Relations
     |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class WorkoutFocusedArea extends Model
     | Custom Helper Functions
     |--------------------------------------------------------------------------
     */
-    public static function insertInfo(int $workout_id, int $focused_area_id) 
+    public static function insertInfo(int $workout_id, int $focused_area_id)
     {
         return self::create([
             'workout_id' => $workout_id,

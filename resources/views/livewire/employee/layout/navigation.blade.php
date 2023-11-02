@@ -6,7 +6,7 @@
              <div class="app-brand demo">
                  <a href="{{ route('emp.index') }}" class="app-brand-link">
                      <span class="app-brand-logo demo">
-                         <img src="{{ asset('storage/images/logo.jpg') }}" alt="logo" class="img-thumbnail" width="90px">
+                         <img src="{{ asset(config('constants.LOGO_LOCATION')) }}" alt="logo" class="img-thumbnail" width="90px">
                      </span>
                  </a>
 
@@ -26,12 +26,12 @@
                      </a>
                  </li>
 
-                 <li class="menu-item @if (Route::current()->uri == 'emp/categories') active @endif">
+                 {{-- <li class="menu-item @if (Route::current()->uri == 'emp/categories') active @endif">
                      <a href="{{ route('emp.categories') }}" class="menu-link">
                          <i class="menu-icon fa-solid fa-shapes fa-bounce"></i>
                          <div>Manage Categories (Apps)</div>
                      </a>
-                 </li>
+                 </li> --}}
 
                  <li class="menu-item @if (Route::current()->uri == 'emp/levels') active @endif">
                      <a href="{{ route('emp.levels') }}" class="menu-link">
@@ -49,7 +49,7 @@
 
                 <li class="menu-item @if (Route::current()->uri == 'emp/weeks') active @endif">
                     <a href="{{ route('emp.weeks') }}" class="menu-link">
-                        <i class="menu-icon fa-solid fa-sitemap fa-bounce"></i>
+                        <i class="menu-icon fa-brands fa-weebly fa-bounce"></i>
                         <div>Manage Weeks</div>
                     </a>
                 </li>
@@ -107,8 +107,7 @@
              <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme" id="layout-navbar">
                  <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
                      <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-                        <i class="fa-solid fa-bars bx bx-menu bx-sm"></i>
-                         {{-- <i class="bx bx-menu bx-sm"></i> --}}
+                        <i class="bx bx-menu bx-sm"></i>
                      </a>
                  </div>
 

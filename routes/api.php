@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ExercisesController;
+use App\Http\Controllers\FocusedAreasController;
+use App\Http\Controllers\CacheController;
+use App\Http\Controllers\WorkoutsController;
 use Illuminate\Support\Facades\Route;
-use Kreait\Laravel\Firebase\Facades\Firebase;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,11 +28,16 @@ Route::prefix('exercises')->group(function () {
     Route::get('/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId']);
 });
 
-Route::prefix('firebase')->group(function () {
-    /** For Modifying Firebase Remote Config **/
-    // Route::get('/remote_config/insert', [ExercisesController::class, 'fireBaseRemoteConfig']);
-    // Route::get('/remote_config/remove', [ExercisesController::class, 'fireBaseRemoteConfigRemove']);
-    // Route::get('/remote_config/group', [ExercisesController::class, 'fireBaseRemoteConfigParamGroup']);
+Route::prefix('focused_areas')->group(function () {
+    Route::get('/', [FocusedAreasController::class, 'list']);
+});
+
+Route::prefix('workouts')->group(function () {
+    Route::get('/', [WorkoutsController::class, 'list']);
+});
+
+Route::prefix('cache')->group(function () {
+    Route::get('/destroy', [CacheController::class, 'destroy']);
 });
 
 // fallback for 404 URL's

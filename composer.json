@@ -8,7 +8,6 @@
         "php": "^8.0.2",
         "firebase/php-jwt": "^6.4",
         "guzzlehttp/guzzle": "^7.0.1",
-        "kreait/laravel-firebase": "*",
         "laravel/breeze": "1.9.4",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.11",

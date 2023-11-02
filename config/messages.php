@@ -24,6 +24,7 @@ return [
     'TOKEN_GENERATED_SUCCESS' => 'A token against your app has been generated successfully.',
     'TOKEN_RESET_SUCCESS' => 'Token reset successfully.',
     'TOKEN_DESTROYED_SUCCESS' => 'Token has been destroyed successfully.',
+    'CACHE_DESTROYED_SUCCESS' => 'All cached data by your application has been removed seccessfully.',
     /* Failure Constants */
     'INSERTION_FAILED' => 'Failed to insert data.',
     'UPDATION_FAILED' => 'Failed to update data.',
@@ -44,6 +45,7 @@ return [
     'PARAM_MISSING' => 'Some required parameters are missing.',
     'PASSWORD_DONT_MATCH' => 'Your given old password does not match our records.',
     'NO_RECORD' => 'No record found.',
+    'CACHE_DESTROYED_FAILED' => 'Sorry! We are failed to remove the cached data of your application.',
     /* Warnings */
     'DELETE_WARNING' => '<b>ARE YOU SURE!!</b> <br> <span class="fs-6">you want to delete this information?</span> <br> <b>YOU CAN\'T UNDO THIS ACTION</b>',
     /* HTTP Codes Constants */

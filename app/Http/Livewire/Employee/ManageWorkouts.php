@@ -7,6 +7,7 @@ use App\Models\FocusedArea;
 use App\Models\Workout;
 use App\Services\ArrayManipulationClass;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -19,7 +20,9 @@ class ManageWorkouts extends Component
         $workout_id,
         $workout_thumbnail,
         $workout,
+        $workout_gender,
         $workout_focused_areas = [],
+        $workout_selected_focused_areas = [],
         $search = '';
 
     protected $paginationTheme = 'bootstrap';
@@ -27,11 +30,13 @@ class ManageWorkouts extends Component
     protected $rules = [
         'workout_thumbnail' => 'required|image|max:50',
         'workout' => 'required|string|unique:workouts,name|regex:/^[A-Za-z\s]+$/',
-        'workout_focused_areas' => 'required',
+        'workout_gender' => 'required|string|regex:/^[A-Za-z\s]+$/',
+        'workout_focused_areas' => 'required|array'
     ];
 
     protected $messages = [
         'workout.regex' => 'Name should contain letters only',
+        'workout_gender.regex' => 'Gender should contain letters only',
         'workout_focused_areas.required' => 'You must have to select atleast one focused area',
     ];
 
@@ -46,6 +51,7 @@ class ManageWorkouts extends Component
         $this->workout_id = '';
         $this->workout_thumbnail = '';
         $this->workout = '';
+        $this->workout_gender = '';
         $this->workout_focused_areas = [];
     }
 
@@ -57,10 +63,14 @@ class ManageWorkouts extends Component
 
     public function renderEditModal($id)
     {
-        $data = Workout::find($id);
+        $data = Workout::getInfoByID($id);
         if ($data) {
             $this->workout_id = $data->id;
+            $this->workout_thumbnail = $data->thumbnail_url;
             $this->workout = $data->name;
+            $this->workout_gender = $data->gender;
+            $this->workout_focused_areas = $data->focused_areas->pluck('id')->toArray();
+            // dd($this->workout_focused_areas);
             $this->dispatchBrowserEvent('show-modal', ['id' => 'editModal']);
         } else {
             session()->flash('error', config('messages.NO_RECORD'));
@@ -78,7 +88,7 @@ class ManageWorkouts extends Component
         $this->validate();
         try {
             /* Perform some operation */
-            $inserted_workout = Workout::insertInfo($this->workout, $this->workout_thumbnail);
+            $inserted_workout = Workout::insertInfo($this->workout, $this->workout_gender, $this->workout_thumbnail);
             foreach ($this->workout_focused_areas as $singel_index) {
                 $inserted_relations = WorkoutFocusedArea::insertInfo($inserted_workout->id, $singel_index);
             }
@@ -100,15 +110,25 @@ class ManageWorkouts extends Component
 
     public function edit()
     {
+        // dd($this->workout_focused_areas);
         $this->validate();
+        // $Validation = Validator::make($this->all(), [
+        //     'workout_thumbnail' => 'image|max:50',
+        //     'workout' => 'string|unique:workouts,name|regex:/^[A-Za-z\s]+$/',
+        //     'workout_gender' => 'string|regex:/^[A-Za-z\s]+$/',
+        //     'workout_focused_areas' => 'array'
+        // ]);
+
+        // if ($Validation->fails()) return;
         try {
             /* Perform some operation */
-            $updated = Workout::updatedInfo($this->workout_id, $this->workout);
+            $updated = Workout::updateInfo($this->workout_id, $this->workout, $this->workout_gender, $this->workout_thumbnail);
+            $relation_updated = Workout::updateRelation($this->workout_id, $this->workout_focused_areas);
             /* Operation finished */
             $this->resetModal();
             sleep(1);
             $this->dispatchBrowserEvent('close-modal', ['id' => 'editModal']);
-            if ($updated) {
+            if ($updated && $relation_updated) {
                 session()->flash('success', config('messages.UPDATION_SUCCESS'));
             } else {
                 session()->flash('error', config('messages.UPDATION_FAILED'));

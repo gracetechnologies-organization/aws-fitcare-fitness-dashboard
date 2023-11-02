@@ -86,7 +86,7 @@ class ManageWeeks extends Component
         $this->validate();
         try {
             /* Perform some operation */
-            $updated = Week::updatedInfo($this->week_id, $this->week);
+            $updated = Week::updateInfo($this->week_id, $this->week);
             /* Operation finished */
             $this->resetModal();
             sleep(1);

@@ -32,7 +32,7 @@ class Week extends Model
         ]);
     }
 
-    public static function updatedInfo(int $id, string $name)
+    public static function updateInfo(int $id, string $name)
     {
         return self::where('id', '=', $id)
         ->update(['name' => $name]);

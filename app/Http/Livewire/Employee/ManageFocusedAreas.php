@@ -88,7 +88,7 @@ class ManageFocusedAreas extends Component
         $this->validate();
         try {
             /* Perform some operation */
-            $updated = FocusedArea::updatedInfo($this->focused_area_id, $this->focused_area);
+            $updated = FocusedArea::updateInfo($this->focused_area_id, $this->focused_area);
             /* Operation finished */
             $this->resetModal();
             sleep(1);
