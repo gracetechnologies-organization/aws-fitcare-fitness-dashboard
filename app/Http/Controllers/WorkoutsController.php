@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Workout;
 use App\Services\CustomResponseClass;
+use App\Services\PaginationManipulationClass;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class WorkoutsController extends Controller
 {
@@ -17,9 +19,21 @@ class WorkoutsController extends Controller
     public function list(Request $req)
     {
         try {
+            // $validator = Validator::make($req->all(), [
+            //     'items_per_page' => 'required|integer'
+            // ]);
+            // if ($validator->fails()) {
+            //     return CustomResponseClass::JsonResponse(
+            //         [],
+            //         config('messages.FAILED_CODE'),
+            //         $validator->errors(),
+            //         config('messages.HTTP_UNPROCESSABLE_DATA')
+            //     );
+            // }
+
             if ($req->id) {
                 $data = Cache::rememberForever('listWorkout' . $req->id, function () use ($req) {
-                    return  Workout::getInfoByID($req->id);
+                    return  Workout::getInfoByIDForApi($req->id);
                 });
                 return CustomResponseClass::JsonResponse(
                     (empty($data)) ? [] : $data,
@@ -28,21 +42,35 @@ class WorkoutsController extends Controller
                     config('messages.HTTP_SUCCESS_CODE')
                 );
             }
-            // Instructions by Shehzada Fahad
-            // per page param rakh len
-            // agr na send kren to 20 per page ayen
-            $data = Workout::getAll();
-            // $data = [];
-            // foreach ($focused_areas as $single_index) {
-            //     array_push($data, [
-            //         "id" => $single_index->id,
-            //         "name" => $single_index->name,
-            //     ]);
-            // }
-            return CustomResponseClass::JsonResponse(
-                $data,
+            $workouts = Workout::getPaginatedInfoForApi(10);
+            // dd($workouts);
+            $data = $workouts->groupBy('workout_id')->map(function ($workout) {
+                return [
+                    'id' => $workout[0]->workout_id,
+                    'name' => $workout[0]->workout_name,
+                    'gender' => $workout[0]->workout_gender,
+                    'thumbnail_url' => asset('uploads/images/workouts/' . $workout[0]->workout_thumbnail_url),
+                    'levels' => $workout->groupBy('level_id')->map(function ($level) {
+                        return [
+                            'id' => $level[0]->level_id,
+                            'name' => $level[0]->level_name,
+                            'weeks' => $level->map(function ($week) {
+                                return [
+                                    'id' => $week->week_id,
+                                    'name' => $week->week_name,
+                                ];
+                            })->unique(),
+                        ];
+                    })->values(),
+                ];
+            });
+            // dd($data);
+            return CustomResponseClass::JsonResponseExtention(
+                $data->values(),
                 config('messages.SUCCESS_CODE'),
                 (empty($data)) ? config('messages.NO_RECORD') : '',
+                'pagination',
+                PaginationManipulationClass::getPaginationKeys($workouts),
                 config('messages.HTTP_SUCCESS_CODE')
             );
         } catch (Exception $error) {

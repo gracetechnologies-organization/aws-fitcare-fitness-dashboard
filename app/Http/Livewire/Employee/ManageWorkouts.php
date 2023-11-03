@@ -70,7 +70,6 @@ class ManageWorkouts extends Component
             $this->workout = $data->name;
             $this->workout_gender = $data->gender;
             $this->workout_focused_areas = $data->focused_areas->pluck('id')->toArray();
-            // dd($this->workout_focused_areas);
             $this->dispatchBrowserEvent('show-modal', ['id' => 'editModal']);
         } else {
             session()->flash('error', config('messages.NO_RECORD'));

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Services\ImageManipulationClass;
+use Illuminate\Support\Facades\DB;
 
 class Workout extends Model
 {
@@ -36,6 +37,10 @@ class Workout extends Model
         return $this->belongsToMany(FocusedArea::class, 'workout_focused_areas', 'workout_id', 'focused_area_id')->withPivot('focused_area_id');
     }
 
+    public function levels()
+    {
+        return $this->belongsToMany(Level::class, 'exercise_relations', 'workout_id', 'level_id')->withPivot('level_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | Custom Helper Functions
@@ -73,10 +78,75 @@ class Workout extends Model
         return self::find($id)->forceDelete();
     }
 
+    public static function getInfoByIDForApi(int $id)
+    {
+        return self::select(
+            'workouts.id as workout_id',
+            'workouts.name as workout_name',
+            'workouts.gender as workout_gender',
+            'workouts.thumbnail_url as workout_thumbnail_url',
+            'levels.id as level_id',
+            'levels.name as level_name',
+            'weeks.id as week_id',
+            'weeks.name as week_name'
+        )
+            ->join('exercise_relations', 'workouts.id', '=', 'exercise_relations.workout_id')
+            ->join('levels', 'exercise_relations.level_id', '=', 'levels.id')
+            ->join('weeks', 'exercise_relations.week_id', '=', 'weeks.id')
+            ->where('workouts.id', '=', $id)
+            ->first();
+    }
+
     public static function getInfoByID(int $id)
     {
         return self::with('focused_areas')
             ->where('id', '=', $id)->first();
+    }
+
+    public static function getPaginatedInfoForApi(int $items_per_page)
+    {
+        return self::select(
+            'workouts.id as workout_id',
+            'workouts.name as workout_name',
+            'workouts.gender as workout_gender',
+            'workouts.thumbnail_url as workout_thumbnail_url',
+            'workouts.created_at',
+            'levels.id as level_id',
+            'levels.name as level_name',
+            'weeks.id as week_id',
+            'weeks.name as week_name'
+        )
+            ->join('exercise_relations', 'workouts.id', '=', 'exercise_relations.workout_id')
+            ->join('levels', 'exercise_relations.level_id', '=', 'levels.id')
+            ->join('weeks', 'exercise_relations.week_id', '=', 'weeks.id')
+            ->distinct()
+            ->orderBy('workouts.created_at', 'desc')
+            ->paginate($items_per_page);
+
+        // $subquery = self::select(
+        //     'workouts.id as workout_id',
+        //     'workouts.name as workout_name',
+        //     'workouts.gender as workout_gender',
+        //     'workouts.thumbnail_url as workout_thumbnail_url',
+        //     'workouts.created_at',
+        //     'levels.id as level_id',
+        //     'levels.name as level_name',
+        //     'weeks.id as week_id',
+        //     'weeks.name as week_name'
+        // )
+        //     ->join('exercise_relations', 'workouts.id', '=', 'exercise_relations.workout_id')
+        //     ->join('levels', 'exercise_relations.level_id', '=', 'levels.id')
+        //     ->join('weeks', 'exercise_relations.week_id', '=', 'weeks.id')
+        //     ->orderBy('workouts.created_at', 'desc');
+        
+        // $distinctRecords = DB::table(DB::raw("({$subquery->toSql()}) as subquery"))
+        //     ->mergeBindings($subquery->getQuery())
+        //     ->distinct()
+        //     ->select('workout_id', 'workout_name', 'workout_gender', 'workout_thumbnail_url', 'created_at', 'level_id', 'level_name', 'week_id', 'week_name')
+        //     ->paginate($items_per_page);
+        
+        // return $distinctRecords;
+        
     }
 
     public static function getPaginatedInfo(string $search)
