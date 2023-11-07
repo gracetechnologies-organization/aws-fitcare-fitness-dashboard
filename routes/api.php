@@ -16,24 +16,23 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::prefix('exercises')->group(function () {
-    /** Route For All Categories,Sub Category, Programs, Levels & Days **/
-    Route::get('/', [ExercisesController::class, 'listAllDataByGivenParams'])->middleware('auth.api.reqs');
-    /** Butt Reduce Routes **/
-    Route::get('/butt_reduce/{cat_id}', [ExercisesController::class, 'listAllDataButtReduce']);
-    /** Neck Workout Routes **/
-    Route::get('/neck_workouts', [ExercisesController::class, 'listAllDataNeckWorkout']);
-    /** Route For All Categories **/
-    Route::get('/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId']);
-});
-
 Route::prefix('focused_areas')->group(function () {
     Route::get('/', [FocusedAreasController::class, 'list']);
 });
 
 Route::prefix('workouts')->group(function () {
-    Route::get('/', [WorkoutsController::class, 'list']);
+    Route::post('/', [WorkoutsController::class, 'list']);
+});
+
+Route::prefix('exercises')->middleware('auth.api.reqs')->group(function () {
+    /** Route For All Categories,Sub Category, Programs, Levels & Days **/
+    Route::get('/', [ExercisesController::class, 'list']);
+    // /** Butt Reduce Routes **/
+    // Route::get('/butt_reduce/{cat_id}', [ExercisesController::class, 'listAllDataButtReduce']);
+    // /** Neck Workout Routes **/
+    // Route::get('/neck_workouts', [ExercisesController::class, 'listAllDataNeckWorkout']);
+    // /** Route For All Categories **/
+    // Route::get('/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId']);
 });
 
 Route::prefix('cache')->group(function () {

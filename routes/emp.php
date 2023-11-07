@@ -11,7 +11,7 @@ use App\Http\Livewire\Employee\ManageFocusedAreas;
 use App\Http\Livewire\Employee\ManageWorkouts;
 use App\Http\Livewire\Employee\Profile;
 
-Route::middleware(['emp.guard', 'check.emp.activation'])->prefix('emp')->group(function () {
+Route::prefix('emp')->middleware(['emp.guard', 'check.emp.activation'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('emp.index');
     Route::get('/categories', ManageCategories::class)->name('emp.categories');
     Route::get('/levels', ManageLevels::class)->name('emp.levels');
@@ -24,6 +24,7 @@ Route::middleware(['emp.guard', 'check.emp.activation'])->prefix('emp')->group(f
     Route::get('/programs/exercises/active/{program_id}', ManageActiveExercises::class)->name('emp.programs.exercises.active');
     Route::get('/exercises/archived', ManageArchivedExercises::class)->name('emp.exercises.archived');
     Route::get('/profile', Profile::class)->name('emp.profile');
+
     Route::post('/update-employee', function () {
         echo "Under Production :(";
     })->name('emp.update');
