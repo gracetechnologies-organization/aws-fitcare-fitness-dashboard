@@ -12,33 +12,12 @@ class ArrayManipulationClass
      * @return object
      * @author Muhammad Abdullah Mirza
      */
-    public static function getCategoriesArray(Collection $collection): object
-    {
-        return $collection->map(function ($category) {
-            return [
-                'ex_cat_id' => $category->id,
-                'ex_cat_name' => $category->name
-            ];
-        });
-    }
-
     public static function getWorkoutsArray(Collection $collection): object
     {
         return $collection->map(function ($workout) {
             return [
                 'workout_id' => $workout->id,
                 'workout_name' => $workout->name
-            ];
-        });
-    }
-
-    public static function getSubCategoriesArray(Collection $collection): object
-    {
-        return $collection->map(function ($sub_categories) {
-            return [
-                'ex_sub_cat_id' => $sub_categories->id,
-                'ex_sub_cat_name' => $sub_categories->name,
-                'ex_sub_cat_parent_category_id' => $sub_categories->category_id
             ];
         });
     }
@@ -59,16 +38,6 @@ class ArrayManipulationClass
             return [
                 'week_id' => $week->id,
                 'week_name' => $week->name
-            ];
-        });
-    }
-
-    public static function getProgramsArray(Collection $collection): object
-    {
-        return $collection->map(function ($program) {
-            return [
-                'ex_prog_id' => $program->id,
-                'ex_prog_name' => $program->name
             ];
         });
     }

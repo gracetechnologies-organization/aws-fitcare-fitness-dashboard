@@ -7,8 +7,6 @@ use App\Models\Exercise;
 use App\Models\ExerciseRelation;
 use App\Models\Level;
 use App\Models\Week;
-use App\Models\Program;
-use App\Models\SubCategory;
 use App\Services\ImageManipulationClass;
 use App\Services\VideoManipulationClass;
 use Carbon\Carbon;
@@ -42,8 +40,6 @@ class ManageActiveExercises extends Component
         $meta_info = [],
         $search = '',
         $request_workout_id;
-        // $request_sub_cat_id,
-        // $request_program_id;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -51,12 +47,12 @@ class ManageActiveExercises extends Component
         'ex_name' => 'required|string|unique:exercises,ex_name',
         'ex_description' => 'required|string',
         'ex_duration' => 'required|integer|numeric',
-        'ex_gender' => 'required|string',
+        'ex_gender' => 'required|regex:/^[A-Za-z\s]+$/',
         'ex_thumbnail' => 'required|image|max:100',
         'ex_video' => 'required|mimetypes:video/mp4|max:800',
         'meta_info.*.ex_workout_id' => 'required|integer|numeric',
         'meta_info.*.ex_level_id' => 'integer|numeric',
-        'meta_info.*.ex_program_id' => 'integer|numeric',
+        'meta_info.*.ex_week_id' => 'integer|numeric',
         'meta_info.*.ex_from_day' => 'integer|numeric',
         'meta_info.*.ex_till_day' => 'integer|numeric',
     ];
@@ -151,14 +147,11 @@ class ManageActiveExercises extends Component
                 'ex_workout_id' => '',
                 'ex_level_id' => '',
                 'ex_week_id' => '',
-                // 'ex_program_id' => '',
                 'ex_from_day' => '',
                 'ex_till_day' => ''
             ]
         ];
         $this->request_workout_id = $request->workout_id;
-        // $this->request_sub_cat_id = $request->sub_cat_id;
-        // $this->request_program_id = $request->program_id;
     }
 
     public function updated($property_name)
@@ -181,7 +174,6 @@ class ManageActiveExercises extends Component
         $this->ex_workout_id = '';
         $this->ex_level_id = '';
         $this->ex_week_id = '';
-        // $this->ex_program_id = '';
         $this->ex_from_day = '';
         $this->ex_till_day = '';
         unset($this->meta_info);
@@ -197,7 +189,6 @@ class ManageActiveExercises extends Component
                 'ex_workout_id' => '',
                 'ex_level_id' => '',
                 'ex_week_id' => '',
-                // 'ex_program_id' => '',
                 'ex_from_day' => '',
                 'ex_till_day' => ''
             ]
@@ -213,20 +204,14 @@ class ManageActiveExercises extends Component
     public function renderEditModal($id)
     {
         $this->resetModal();
-        $exercise_data = Exercise::find($id);
-        $relations_data = Exercise::select('exercise_relations.id as rel_id', 'exercises.id as ex_id', 'workouts.id as workout_id', 'workouts.name as workout_name', 'sub_categories.id as sub_cat_id', 'sub_categories.name as sub_cat_name', 'levels.id as level_id', 'levels.name as level_name', 'programs.id as program_id', 'programs.name as program_name', 'exercise_relations.from_day', 'exercise_relations.till_day')
-            ->leftJoin('exercise_relations', 'exercise_relations.ex_id', '=', 'exercises.id')
-            ->leftJoin('workouts', 'workouts.id', '=', 'exercise_relations.workout_id')
-            ->leftJoin('sub_categories', 'sub_categories.id', '=', 'exercise_relations.sub_cat_id')
-            ->leftJoin('levels', 'levels.id', '=', 'exercise_relations.level_id')
-            ->leftJoin('programs', 'programs.id', '=', 'exercise_relations.program_id')
-            ->where('exercises.id', $id)
-            ->get();
+        $exercise_data = Exercise::getInfoByID($id);
+        $relations_data = Exercise::getRelationsInfoByID($id);
         if ($exercise_data && $relations_data) {
             $this->ex_id = $exercise_data->id;
             $this->ex_name = $exercise_data->ex_name;
             $this->ex_description = $exercise_data->ex_description;
             $this->ex_duration = $exercise_data->ex_duration;
+            $this->ex_gender = $exercise_data->ex_gender;
             $this->ex_thumbnail_url = $exercise_data->ex_thumbnail_url;
             $this->ex_video_url = $exercise_data->ex_video_url;
             foreach ($relations_data as $singel_index => $value) {
@@ -235,11 +220,11 @@ class ManageActiveExercises extends Component
                     'ex_workout_id' => $value['workout_id'],
                     'ex_level_id' => $value['level_id'],
                     'ex_week_id' => $value['week_id'],
-                    // 'ex_program_id' => $value['program_id'],
                     'ex_from_day' => $value['from_day'],
                     'ex_till_day' => $value['till_day'],
                 ];
             }
+            $this->dispatchBrowserEvent('show-modal', ['id' => 'editModal']);
         } else {
             return redirect()->to(route('emp.exercises.active'))->with('error', 'Record Not Found.');
         }
@@ -252,7 +237,6 @@ class ManageActiveExercises extends Component
 
     public function add()
     {
-        // dd($this->ex_gender);
         $this->validate();
         try {
             /* Perform some operation */
@@ -270,8 +254,6 @@ class ManageActiveExercises extends Component
                     'workout_id' => $singel_index['ex_workout_id'],
                     'level_id' => (!empty($singel_index['ex_level_id'])) ? $singel_index['ex_level_id'] : null,
                     'week_id' => (!empty($singel_index['ex_week_id'])) ? $singel_index['ex_week_id'] : null,
-                    // 'sub_cat_id' => (!empty($singel_index['ex_week_id'])) ? $singel_index['ex_week_id'] : null,
-                    // 'program_id' => (!empty($singel_index['ex_program_id'])) ? $singel_index['ex_program_id'] : null,
                     'from_day' => (!empty($singel_index['ex_from_day'])) ? $singel_index['ex_from_day'] : null,
                     'till_day' => (!empty($singel_index['ex_till_day'])) ? $singel_index['ex_till_day'] : null,
                 ]);
@@ -352,6 +334,26 @@ class ManageActiveExercises extends Component
         }
     }
 
+    public function updateGender()
+    {
+        $this->validateOnly('ex_gender');
+        try {
+            /* Perform some operation */
+            $updated = Exercise::where('id', '=', $this->ex_id)
+                ->update(['ex_gender' => $this->ex_gender]);
+            /* Operation finished */
+            sleep(1);
+            if ($updated) {
+                session()->flash('success', config('messages.UPDATION_SUCCESS'));
+            } else {
+                session()->flash('error', config('messages.UPDATION_FAILED'));
+            }
+        } catch (Exception $error) {
+            report($error);
+            session()->flash('error', config('messages.INVALID_DATA'));
+        }
+    }
+
     public function updateImage()
     {
         $this->validateOnly('ex_thumbnail');
@@ -402,9 +404,8 @@ class ManageActiveExercises extends Component
                 [
                     'ex_id' => $this->ex_id,
                     'workout_id' => $this->meta_info[$index]['ex_workout_id'],
-                    'sub_cat_id' => (!empty($this->meta_info[$index]['ex_week_id'])) ? $this->meta_info[$index]['ex_week_id'] : null,
                     'level_id' => (!empty($this->meta_info[$index]['ex_level_id'])) ? $this->meta_info[$index]['ex_level_id'] : null,
-                    'program_id' => (!empty($this->meta_info[$index]['ex_program_id'])) ? $this->meta_info[$index]['ex_program_id'] : null,
+                    'week_id' => (!empty($this->meta_info[$index]['ex_week_id'])) ? $this->meta_info[$index]['ex_week_id'] : null,
                     'from_day' => (!empty($this->meta_info[$index]['ex_from_day'])) ? $this->meta_info[$index]['ex_from_day'] : null,
                     'till_day' => (!empty($this->meta_info[$index]['ex_till_day'])) ? $this->meta_info[$index]['ex_till_day'] : null
                 ]
@@ -446,7 +447,7 @@ class ManageActiveExercises extends Component
             session()->flash('error', config('messages.INVALID_DATA'));
         }
     }
-    
+
     public function delMetaInfoRowFromDb(int $rel_id = null, int $index)
     {
         try {
@@ -503,7 +504,6 @@ class ManageActiveExercises extends Component
             'ex_workout_id' => '',
             'ex_level_id' => '',
             'ex_week_id' => '',
-            // 'ex_program_id' => '',
             'ex_from_day' => '',
             'ex_till_day' => ''
         ];
@@ -542,14 +542,14 @@ class ManageActiveExercises extends Component
         elseif (!empty($this->request_program_id))
             $data = Exercise::getExercisesOfProgram($this->request_program_id, $this->search);
         else
-            $data = Exercise::getExercises($this->search);
+            $data = Exercise::getAll($this->search);
 
         $workouts = Workout::getAll();
         $levels = Level::orderBy('name', 'asc')->get();
         $weeks = Week::orderBy('name', 'asc')->get();
         return view('livewire.employee.manage-active-exercises', [
-            'data' => $data, 
-            'workouts' => $workouts, 
+            'data' => $data,
+            'workouts' => $workouts,
             'levels' => $levels,
             'weeks' => $weeks
         ]);

@@ -26,24 +26,10 @@
                      </a>
                  </li>
 
-                 {{-- <li class="menu-item @if (Route::current()->uri == 'emp/categories') active @endif">
-                     <a href="{{ route('emp.categories') }}" class="menu-link">
-                         <i class="menu-icon fa-solid fa-shapes fa-bounce"></i>
-                         <div>Manage Categories (Apps)</div>
-                     </a>
-                 </li> --}}
-
                  <li class="menu-item @if (Route::current()->uri == 'emp/levels') active @endif">
                      <a href="{{ route('emp.levels') }}" class="menu-link">
                          <i class="menu-icon fa-solid fa-layer-group fa-bounce"></i>
                          <div>Manage Levels</div>
-                     </a>
-                 </li>
-
-                 <li class="menu-item @if (Route::current()->uri == 'emp/programs') active @endif">
-                     <a href="{{ route('emp.programs') }}" class="menu-link">
-                         <i class="menu-icon fa-solid fa-sitemap fa-bounce"></i>
-                         <div>Manage Programs</div>
                      </a>
                  </li>
 
@@ -52,6 +38,28 @@
                         <i class="menu-icon fa-brands fa-weebly fa-bounce"></i>
                         <div>Manage Weeks</div>
                     </a>
+                </li>
+
+                <li class="menu-item">
+                    <a href="#" class="menu-link">
+                        <i class="menu-icon fa-regular fa-calendar-days fa-bounce"></i>
+                        <div>Manage Plans</div>
+                        <i class="ms-auto fa-solid fa-angle-down"></i>
+                    </a>
+                    <ul class="menu-inner menu-sub-items" style="display:none;">
+                        <li class="menu-item ms-4 @if (Route::current()->uri == 'emp/main-goals') active @endif">
+                            <a href="{{ route('emp.focused_areas') }}" class="menu-link">
+                                <i class="menu-icon fa-solid fa-bullseye fa-beat-fade"></i>
+                                <div>Main Goals</div>
+                            </a>
+                        </li>
+                        <li class="menu-item ms-4 @if (Route::current()->uri == 'emp/plans') active @endif">
+                            <a href="{{ route('emp.workouts') }}" class="menu-link">
+                                <i class="menu-icon fa-regular fa-calendar-days fa-beat-fade"></i>
+                                <div>Plans</div>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                  <li class="menu-item">

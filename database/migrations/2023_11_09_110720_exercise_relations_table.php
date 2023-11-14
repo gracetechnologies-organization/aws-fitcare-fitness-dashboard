@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExerciseRelationsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -28,7 +28,7 @@ class CreateExerciseRelationsTable extends Migration
             $table->foreign('week_id')->references('id')->on('weeks')->onDelete('cascade');
             // $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
             $table->timestamps();
-        });
+        });   
     }
 
     /**
@@ -38,6 +38,6 @@ class CreateExerciseRelationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exercise_relations');
+        Schema::dropIfExists('exercise_relaions');
     }
-}
+};

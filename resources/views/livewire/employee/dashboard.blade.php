@@ -5,7 +5,7 @@
         <div id="cms-block-b" class="cms-block cms-block-element col-md-3">
             <div class="small-box small-box-custom-styles">
                 <div class="inner">
-                    <h3>{{ $total_categories }}</h3>
+                    <h3>static</h3>
                     <p>Total Categories (Apps)</p>
                 </div>
                 <div class="icon">
@@ -30,7 +30,7 @@
         <div id="cms-block-b" class="cms-block cms-block-element col-md-3">
             <div class="small-box small-box-custom-styles">
                 <div class="inner">
-                    <h3>{{ $total_programs }}</h3>
+                    <h3>static</h3>
                     <p>Total Programs</p>
                 </div>
                 <div class="icon">

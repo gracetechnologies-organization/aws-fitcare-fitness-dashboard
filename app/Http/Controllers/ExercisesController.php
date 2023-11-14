@@ -12,53 +12,29 @@ use Illuminate\Support\Facades\Validator;
 class ExercisesController extends Controller
 {
     /**
-     * List all data w.r.t cat_id
-     * @return \Illuminate\Http\JsonResponse
-     * @author Muhammad Abdullah Mirza
-     */
-    public function listAllDataByCatId($cat_id)
-    {
-        try {
-            return CustomResponseClass::JsonResponse(
-                $data = Exercise::fetchExercisesByCatId($cat_id),
-                config('messages.SUCCESS_CODE'),
-                (empty($data)) ? config('messages.NO_RECORD') : '',
-                config('messages.HTTP_SUCCESS_CODE')
-            );
-        } catch (Exception $error) {
-            report($error);
-            return CustomResponseClass::JsonResponse(
-                [],
-                config('messages.FAILED_CODE'),
-                $error->getMessage(),
-                config('messages.HTTP_SERVER_ERROR_CODE')
-            );
-        }
-    }
-    /**
      * List all data for Neck Workout App
      * @return \Illuminate\Http\JsonResponse
      * @author Muhammad Abdullah Mirza
      */
-    public function listAllDataNeckWorkout()
-    {
-        try {
-            return CustomResponseClass::JsonResponse(
-                $data = Exercise::fetchAllNeckWorkouts(),
-                config('messages.SUCCESS_CODE'),
-                (empty($data)) ? config('messages.NO_RECORD') : '',
-                config('messages.HTTP_SUCCESS_CODE')
-            );
-        } catch (Exception $error) {
-            report($error);
-            return CustomResponseClass::JsonResponse(
-                [],
-                config('messages.FAILED_CODE'),
-                $error->getMessage(),
-                config('messages.HTTP_SERVER_ERROR_CODE')
-            );
-        }
-    }
+    // public function listAllDataNeckWorkout()
+    // {
+    //     try {
+    //         return CustomResponseClass::JsonResponse(
+    //             $data = Exercise::fetchAllNeckWorkouts(),
+    //             config('messages.SUCCESS_CODE'),
+    //             (empty($data)) ? config('messages.NO_RECORD') : '',
+    //             config('messages.HTTP_SUCCESS_CODE')
+    //         );
+    //     } catch (Exception $error) {
+    //         report($error);
+    //         return CustomResponseClass::JsonResponse(
+    //             [],
+    //             config('messages.FAILED_CODE'),
+    //             $error->getMessage(),
+    //             config('messages.HTTP_SERVER_ERROR_CODE')
+    //         );
+    //     }
+    // }
     /**
      * List all data for any provided params 
      * @return \Illuminate\Http\JsonResponse
@@ -94,12 +70,9 @@ class ExercisesController extends Controller
                     'video_thumbnail' => asset('uploads/images/exercises/' . $single_exercise->ex_thumbnail_url),
                     'video_url_path' => asset('uploads/videos/exercises/' . $single_exercise->ex_video_url),
                     'is_active' => $single_exercise->is_active,
-                    // 'category' => ArrayManipulationClass::getCategoriesArray($single_exercise->categories),
-                    // 'sub_category' => ArrayManipulationClass::getSubCategoriesArray($single_exercise->subCategories),
                     'workouts' => ArrayManipulationClass::getWorkoutsArray($single_exercise->workouts),
                     'levels' => ArrayManipulationClass::getLevelsArray($single_exercise->levels),
                     'weeks' => ArrayManipulationClass::getWeeksArray($single_exercise->weeks),
-                    // 'programs' => ArrayManipulationClass::getProgramsArray($single_exercise->programs),
                     'days' => ArrayManipulationClass::getDaysArray($single_exercise->exerciseRelations)
                 ];
             }

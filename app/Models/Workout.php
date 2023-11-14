@@ -98,8 +98,7 @@ class Workout extends Model
 
     public static function getInfoByID(int $id)
     {
-        return self::with('focused_areas')
-            ->where('id', '=', $id)->first();
+        return self::with('focused_areas')->where('id', '=', $id)->first();
     }
 
     public static function getPaginatedInfoByParamsForApi(array $focused_areas_ids, string $gender)

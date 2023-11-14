@@ -29,8 +29,8 @@ class ManageWorkouts extends Component
 
     protected $rules = [
         'workout_thumbnail' => 'required|image|max:50',
-        'workout' => 'required|string|unique:workouts,name|regex:/^[A-Za-z\s]+$/',
-        'workout_gender' => 'required|string|regex:/^[A-Za-z\s]+$/',
+        'workout' => 'required|unique:workouts,name|regex:/^[A-Za-z\s]+$/',
+        'workout_gender' => 'required|regex:/^[A-Za-z\s]+$/',
         'workout_focused_areas' => 'required|array'
     ];
 

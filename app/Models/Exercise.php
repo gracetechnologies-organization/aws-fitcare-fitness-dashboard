@@ -34,7 +34,6 @@ class Exercise extends Model
     | ORM Relations
     |--------------------------------------------------------------------------
     */
-
     public function exerciseRelations()
     {
         return $this->hasMany(ExerciseRelation::class, 'ex_id');
@@ -75,165 +74,42 @@ class Exercise extends Model
     | Custom Helper Functions
     |--------------------------------------------------------------------------
     */
-    public static function getExercises(string $search)
+    public static function getRelationsInfoByID(int $id)
     {
-        return Exercise::where('ex_name', 'like', '%' . $search . '%')
+        return self::select('exercise_relations.id as rel_id', 'exercises.id as ex_id', 'workouts.id as workout_id', 'workouts.name as workout_name', 'levels.id as level_id', 'levels.name as level_name', 'weeks.id as week_id', 'weeks.name as week_name', 'exercise_relations.from_day', 'exercise_relations.till_day')
+            ->leftJoin('exercise_relations', 'exercise_relations.ex_id', '=', 'exercises.id')
+            ->leftJoin('workouts', 'workouts.id', '=', 'exercise_relations.workout_id')
+            ->leftJoin('levels', 'levels.id', '=', 'exercise_relations.level_id')
+            ->leftJoin('weeks', 'weeks.id', '=', 'exercise_relations.week_id')
+            ->where('exercises.id', $id)
+            ->get();
+    }
+
+    public static function getInfoByID(int $id)
+    {
+        return self::find($id);
+    }
+
+    public static function getAllTrashed(string $search)
+    {
+        return self::onlyTrashed()->where('ex_name', 'like', '%' . $search . '%')
+            ->where('is_active', 0)
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(10);
+    }
+
+    public static function getAll(string $search)
+    {
+        return self::where('ex_name', 'like', '%' . $search . '%')
             ->where('is_active', 1)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-    }
-
-    public static function getExercisesOfCategory(int $cat_id, string $search)
-    {
-        return Exercise::whereHas('categories', function ($query) use ($cat_id) {
-            $query->where('categories.id', $cat_id);
-        })
-            ->where('ex_name', 'like', '%' . $search . '%')
-            ->where('is_active', 1)
-            ->paginate(10);
-    }
-
-    public static function getExercisesOfSubCategory(int $cat_id, int $sub_cat_id, string $search)
-    {
-        return Exercise::whereHas('subCategories', function ($query) use ($cat_id, $sub_cat_id) {
-            $query->where('sub_categories.id', $sub_cat_id)
-                ->where('sub_categories.category_id', $cat_id);
-        })
-            ->where('ex_name', 'like', '%' . $search . '%')
-            ->where('is_active', 1)
-            ->paginate(10);
-    }
-
-    public static function getExercisesOfProgram(int $program_id, string $search)
-    {
-        return Exercise::whereHas('programs', function ($query) use ($program_id) {
-            $query->where('programs.id', $program_id);
-        })
-            ->where('ex_name', 'like', '%' . $search . '%')
-            ->where('is_active', 1)
-            ->paginate(10);
-    }
-
-    public static function totalExercisesOfCategory(int $cat_id)
-    {
-        return Exercise::whereHas('exerciseRelations', function ($query) use ($cat_id) {
-            $query->where('exercise_relations.cat_id', $cat_id);
-        })
-            ->where('is_active', 1)
-            ->count();
-    }
-
-    public static function totalExercisesOfCategoryLevel(int $cat_id, int $level_id)
-    {
-        return Exercise::whereHas('exerciseRelations', function ($query) use ($cat_id, $level_id) {
-            $query->where('exercise_relations.cat_id', $cat_id)
-                ->where('exercise_relations.level_id', $level_id);
-        })
-            ->where('is_active', 1)
-            ->count();
-    }
-
-    public static function totalExercisesOfSubCategory(int $sub_cat_id)
-    {
-        return Exercise::whereHas('exerciseRelations', function ($query) use ($sub_cat_id) {
-            $query->where('exercise_relations.sub_cat_id', $sub_cat_id);
-        })
-            ->where('is_active', 1)
-            ->count();
     }
     /*
     |--------------------------------------------------------------------------
     | API Functions
     |--------------------------------------------------------------------------
     */
-
-    /**
-     * @author Muhammad Abdullah Mirza
-     */
-    // public static function fetchAllNeckWorkouts()
-    // {
-    //     $data = [];
-    //     $exercises = Exercise::whereHas('exerciseRelations', function ($query) {
-    //         $query->whereIn('cat_id', [10, 11, 12]);
-    //     })
-    //         ->with([
-    //             'categories' => function ($query) {
-    //                 $query->whereIn('cat_id', [10, 11, 12]);
-    //             }, 'programs' => function ($query) {
-    //                 $query->whereIn('cat_id', [10, 11, 12]);
-    //             }
-    //         ])
-    //         ->where('is_active', 1)
-    //         ->orderByDesc('created_at')
-    //         ->get();
-
-    //     foreach ($exercises as $single_exercise) {
-    //         array_push($data, (object)
-    //         [
-    //             'ex_id' => $single_exercise->id,
-    //             'ex_title' => $single_exercise->ex_name,
-    //             'ex_description' => $single_exercise->ex_description,
-    //             'ex_duration' => $single_exercise->ex_duration,
-    //             'video_thumbnail' => asset('storage/images/' . str_replace(" ", "%20", $single_exercise->ex_thumbnail_url)),
-    //             'video_url_path' => asset('storage/videos/' . str_replace(" ", "%20", $single_exercise->ex_video_url)),
-    //             'is_active' => $single_exercise->is_active,
-    //             'created_at' => $single_exercise->created_at,
-    //             'updated_at' => $single_exercise->updated_at,
-    //             'deleted_at' => $single_exercise->deleted_at,
-    //             'category' => static::getCategoriesArray($single_exercise->categories),
-    //             'programs' => static::getProgramsArray($single_exercise->programs)
-    //         ]);
-    //     }
-    //     return $data;
-    // }
-    /**
-     * @author Muhammad Abdullah Mirza
-     */
-    // public static function fetchExercisesByCatId(int $cat_id)
-    // {
-    //     $data = [];
-    //     $exercises = Exercise::whereHas('exerciseRelations', function ($query) use ($cat_id) {
-    //         $query->where('cat_id', $cat_id);
-    //     })
-    //         ->with([
-    //             'exerciseRelations' => function ($query) use ($cat_id) {
-    //                 $query->where('cat_id', $cat_id);
-    //             }, 'categories' => function ($query) use ($cat_id) {
-    //                 $query->where('cat_id', $cat_id)->distinct();
-    //             }, 'subCategories' => function ($query) use ($cat_id) {
-    //                 $query->where('cat_id', $cat_id);
-    //             }, 'levels' => function ($query) use ($cat_id) {
-    //                 $query->where('cat_id', $cat_id);
-    //             }, 'programs' => function ($query) use ($cat_id) {
-    //                 $query->where('cat_id', $cat_id);
-    //             }
-    //         ])
-    //         ->where('is_active', 1)
-    //         ->orderByDesc('created_at')
-    //         ->get();
-
-    //     foreach ($exercises as $single_exercise) {
-    //         array_push($data, (object)
-    //         [
-    //             'ex_id' => $single_exercise->id,
-    //             'ex_title' => $single_exercise->ex_name,
-    //             'ex_description' => $single_exercise->ex_description,
-    //             'ex_duration' => $single_exercise->ex_duration,
-    //             'video_thumbnail' => asset('storage/images/' . str_replace(" ", "%20", $single_exercise->ex_thumbnail_url)),
-    //             'video_url_path' => asset('storage/videos/' . str_replace(" ", "%20", $single_exercise->ex_video_url)),
-    //             'is_active' => $single_exercise->is_active,
-    //             'created_at' => $single_exercise->created_at,
-    //             'updated_at' => $single_exercise->updated_at,
-    //             'deleted_at' => $single_exercise->deleted_at,
-    //             'category' => static::getCategoriesArray($single_exercise->categories),
-    //             'sub_category' => static::getSubCategoriesArray($single_exercise->subCategories),
-    //             'levels' => static::getLevelsArray($single_exercise->levels),
-    //             'programs' => static::getProgramsArray($single_exercise->programs),
-    //             'days' => static::getDaysArray($single_exercise->exerciseRelations)
-    //         ]);
-    //     }
-    //     return $data;
-    // }
     /**
      * @author Muhammad Abdullah Mirza
      */
@@ -270,4 +146,63 @@ class Exercise extends Model
             ->orderByDesc('created_at')
             ->get();
     }
+
+    // public static function getExercisesOfCategory(int $cat_id, string $search)
+    // {
+    //     return self::whereHas('categories', function ($query) use ($cat_id) {
+    //         $query->where('categories.id', $cat_id);
+    //     })
+    //         ->where('ex_name', 'like', '%' . $search . '%')
+    //         ->where('is_active', 1)
+    //         ->paginate(10);
+    // }
+
+    // public static function getExercisesOfSubCategory(int $cat_id, int $sub_cat_id, string $search)
+    // {
+    //     return self::whereHas('subCategories', function ($query) use ($cat_id, $sub_cat_id) {
+    //         $query->where('sub_categories.id', $sub_cat_id)
+    //             ->where('sub_categories.category_id', $cat_id);
+    //     })
+    //         ->where('ex_name', 'like', '%' . $search . '%')
+    //         ->where('is_active', 1)
+    //         ->paginate(10);
+    // }
+
+    // public static function getExercisesOfProgram(int $program_id, string $search)
+    // {
+    //     return self::whereHas('programs', function ($query) use ($program_id) {
+    //         $query->where('programs.id', $program_id);
+    //     })
+    //         ->where('ex_name', 'like', '%' . $search . '%')
+    //         ->where('is_active', 1)
+    //         ->paginate(10);
+    // }
+
+    // public static function totalExercisesOfCategory(int $cat_id)
+    // {
+    //     return self::whereHas('exerciseRelations', function ($query) use ($cat_id) {
+    //         $query->where('exercise_relations.cat_id', $cat_id);
+    //     })
+    //         ->where('is_active', 1)
+    //         ->count();
+    // }
+
+    // public static function totalExercisesOfCategoryLevel(int $cat_id, int $level_id)
+    // {
+    //     return self::whereHas('exerciseRelations', function ($query) use ($cat_id, $level_id) {
+    //         $query->where('exercise_relations.cat_id', $cat_id)
+    //             ->where('exercise_relations.level_id', $level_id);
+    //     })
+    //         ->where('is_active', 1)
+    //         ->count();
+    // }
+
+    // public static function totalExercisesOfSubCategory(int $sub_cat_id)
+    // {
+    //     return self::whereHas('exerciseRelations', function ($query) use ($sub_cat_id) {
+    //         $query->where('exercise_relations.sub_cat_id', $sub_cat_id);
+    //     })
+    //         ->where('is_active', 1)
+    //         ->count();
+    // }
 }

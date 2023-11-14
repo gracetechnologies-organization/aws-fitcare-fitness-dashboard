@@ -62,7 +62,7 @@
                                 <div class="col-12 mb-3">
                                     <label class="form-label">Gender*</label>
                                     <select wire:model.lazy="workout_gender" class="form-select">
-                                        <option value="" selected>Select gender</option>
+                                        <option value="" selected>Select Gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
                                     </select>

@@ -20,7 +20,7 @@ class ManageFocusedAreas extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'focused_area' => 'required|string|unique:focused_areas,name|regex:/^[A-Za-z\s]+$/'
+        'focused_area' => 'required|unique:focused_areas,name|regex:/^[A-Za-z\s]+$/'
     ];
 
     protected $messages = [

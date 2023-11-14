@@ -16,7 +16,7 @@ class ManageLevels extends Component
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'level' => 'required|string|unique:levels,name|regex:/^[A-Za-z\s]+$/'
+        'level' => 'required|unique:levels,name|regex:/^[A-Za-z\s]+$/'
     ];
 
     protected $messages = [

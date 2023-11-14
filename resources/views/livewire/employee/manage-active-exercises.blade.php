@@ -267,13 +267,13 @@
                             <div class="col mb-3">
                                 <label class="form-label">Gender*</label>
                                 <div class="input-group mb-3">
-                                    <select wire:model.lazy="ex_gender" class="form-select">
+                                    <select wire:model.defer="ex_gender" class="form-select">
                                         <option selected value="">Select Gender*</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
                                     </select>
                                     <button type="submit" class="btn btn-primary" wire:loading.class="btn-dark" wire:loading.class.remove="btn-primary" wire:loading.attr="disabled" wire:click="updateGender">
-                                        <span wire:loading.remove wire:target="ex_gender">Update Duration</span>
+                                        <span wire:loading.remove wire:target="ex_gender">Update Gender</span>
                                         <span wire:loading wire:target="ex_gender">
                                             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                                         </span>
@@ -329,24 +329,36 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="ex_category_id" class="form-label">Meta Info</label>
+                            <label class="form-label">Workouts</label>
                             @foreach ($meta_info as $single_index => $value)
                                 <div class="input-group mb-3">
-                                    <select wire:model.defer="meta_info.{{ $single_index }}.ex_category_id" class="form-select">
-                                        <option selected value="">Category*</option>
+                                    <select wire:model.defer="meta_info.{{ $single_index }}.ex_workout_id" class="form-select">
+                                        <option selected value="">Select Workout*</option>
                                         @forelse ($workouts as $single_workout)
-                                            <option value="{{ $single_workout->id }}">
-                                                {{ $single_workout->name }}
-                                            </option>
+                                            @if ($single_workout->gender === $ex_gender)
+                                                <option value="{{ $single_workout->id }}">
+                                                    {{ $single_workout->name }}
+                                                </option>
+                                            @endif
                                         @empty
                                             <option value="" disabled>No Data</option>
                                         @endforelse
                                     </select>
                                     <select wire:model.defer="meta_info.{{ $single_index }}.ex_level_id" class="form-select">
-                                        <option selected value="">Level</option>
+                                        <option selected value="">Select Level*</option>
                                         @forelse($levels as $single_level)
                                             <option value="{{ $single_level->id }}">
                                                 {{ $single_level->name }}
+                                            </option>
+                                        @empty
+                                            <option value="" disabled>No Data</option>
+                                        @endforelse
+                                    </select>
+                                    <select wire:model.defer="meta_info.{{ $single_index }}.ex_week_id" class="form-select">
+                                        <option selected value="">Select Week*</option>
+                                        @forelse($weeks as $single_week)
+                                            <option value="{{ $single_week->id }}">
+                                                {{ $single_week->name }}
                                             </option>
                                         @empty
                                             <option value="" disabled>No Data</option>
@@ -491,7 +503,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="row">
+        <div class="px-3">
             {{ $data->links() }}
         </div>
     </div>

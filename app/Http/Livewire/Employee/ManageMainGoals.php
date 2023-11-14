@@ -2,42 +2,29 @@
 
 namespace App\Http\Livewire\Employee;
 
-use App\Models\Exercise;
-use App\Models\SubCategory;
 use Exception;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class ManageSubCategories extends Component
+class ManageMainGoals extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public
-        $sub_category_id,
-        $sub_category,
-        $search = '',
-        $parent_category_id,
-        $save_updated_id,
-        $selectAll = false,
-        $selected,
-        $component_id;
+    $main_goal_id, 
+    $main_goal, 
+    $search = '';
 
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'sub_category' => 'required|string|unique:sub_categories,name|regex:/^[A-Za-z\s]+$/'
+        'main_goal' => 'required|regex:/^[A-Za-z\s]+$/'
     ];
 
     protected $messages = [
-        'sub_category.required' => 'Oye sub category daal 😒',
-        'sub_category.unique' => 'Yar unique data daal bhangra na daal 😒',
-        'sub_category.regex' => 'Jigar sirf letters dalo 🙂'
+        'main_goal.regex' => 'Name should contain letters only'
     ];
-
-    public function mount()
-    {
-        $this->component_id = $this->id;
-    }
 
     public function updated($property_name)
     {
@@ -47,8 +34,8 @@ class ManageSubCategories extends Component
     public function resetModal()
     {
         $this->resetAllErrors();
-        $this->sub_category_id = '';
-        $this->sub_category = '';
+        $this->main_goal_id = '';
+        $this->main_goal = '';
     }
 
     public function resetAllErrors()
@@ -57,36 +44,33 @@ class ManageSubCategories extends Component
         $this->resetValidation();
     }
 
-    public function renderEditSubCategoryModal($id)
+    public function renderEditModal($id)
     {
-        $data = SubCategory::find($id);
+        $data = MainGoal::find($id);
         if ($data) {
-            $this->sub_category_id = $data->id;
-            $this->sub_category = $data->name;
+            $this->main_goal_id = $data->id;
+            $this->main_goal = $data->name;
+            $this->dispatchBrowserEvent('show-modal', ['id' => 'editModal']);
         } else {
-            return redirect()->to(route('emp.categories'))->with('error', 'Record Not Found.');
+            session()->flash('error', config('messages.NO_RECORD'));
         }
     }
 
-    public function renderDeleteSubCategoryModal($id)
+    public function renderDeleteModal($id)
     {
-        $this->sub_category_id = $id;
+        $this->main_goal_id = $id;
     }
 
-    public function addSubCategory($model_id)
+    public function add()
     {
         $this->validate();
         try {
             /* Perform some operation */
-            $inserted = SubCategory::create([
-                'name' => $this->sub_category,
-                'category_id' => $this->parent_category_id,
-            ]);
+            $inserted = MainGoal::insertInfo($this->main_goal);
             /* Operation finished */
             $this->resetModal();
-            $this->resetPage();
             sleep(1);
-            $this->dispatchBrowserEvent('close-modal', ['id' => $model_id]);
+            $this->dispatchBrowserEvent('close-modal', ['id' => 'addModal']);
             if ($inserted) {
                 session()->flash('success', config('messages.INSERTION_SUCCESS'));
             } else {
@@ -98,17 +82,16 @@ class ManageSubCategories extends Component
         }
     }
 
-    public function editSubCategory($model_id)
+    public function edit()
     {
         $this->validate();
         try {
             /* Perform some operation */
-            $updated = SubCategory::where('id', '=', $this->sub_category_id)
-                ->update(['name' => $this->sub_category]);
+            $updated = MainGoal::updateInfo($this->main_goal_id, $this->main_goal);
             /* Operation finished */
             $this->resetModal();
             sleep(1);
-            $this->dispatchBrowserEvent('close-modal', ['id' => $model_id]);
+            $this->dispatchBrowserEvent('close-modal', ['id' => 'editModal']);
             if ($updated) {
                 session()->flash('success', config('messages.UPDATION_SUCCESS'));
             } else {
@@ -120,14 +103,14 @@ class ManageSubCategories extends Component
         }
     }
 
-    public function destroySubCategory($model_id)
+    public function destroy()
     {
         try {
             /* Perform some operation */
-            $deleted = SubCategory::find($this->sub_category_id)->delete();
+            $deleted = MainGoal::deleteInfo($this->main_goal_id);
             /* Operation finished */
             sleep(1);
-            $this->dispatchBrowserEvent('close-modal', ['id' => $model_id]);
+            $this->dispatchBrowserEvent('close-modal', ['id' => 'deleteModal']);
             if ($deleted) {
                 session()->flash('success', config('messages.DELETION_SUCCESS'));
             } else {
@@ -146,14 +129,9 @@ class ManageSubCategories extends Component
      * The given form action manually
      * @author Muhammad Abdullah Mirza
      */
-    public function submitForm($method_name, $model_id = null)
+    public function submitForm($form_name)
     {
-        ($model_id != null) ? $this->$method_name($model_id) : $this->$method_name();
-    }
-
-    public function totalExercisesOfSubCategory($sub_cat_id)
-    {
-        return Exercise::totalExercisesOfSubCategory($sub_cat_id);
+        $this->$form_name();
     }
 
     public function updatingSearch()
@@ -163,11 +141,7 @@ class ManageSubCategories extends Component
 
     public function render()
     {
-        $data = SubCategory::where('name', 'like', '%' . $this->search . '%')
-            ->where('category_id', $this->parent_category_id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(5, ['*'], 'sub_cat_page');
-
-        return view('livewire.employee.manage-sub-categories', ['data' => $data]);
+        $data = MainGoal::getPaginatedInfo($this->search);
+        return view('livewire.employee.manage-main-goals', ['data' => $data]);
     }
 }
