@@ -191,7 +191,7 @@
                         </tr>
                     @empty
                         <tr class="alert alert-warning alert-dismissible text-center rounded-bottom">
-                            <td colspan="5" class="text-center">No Record Found.</td>
+                            <td colspan="5" class="text-center">No Record Found</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Employee;
 
+use App\Models\MainGoal;
 use Exception;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -12,14 +13,18 @@ class ManageMainGoals extends Component
     use WithPagination, WithFileUploads;
 
     public
-    $main_goal_id, 
-    $main_goal, 
+    $main_goal_id,
+    $main_goal,
+    $main_goal_gender,
+    $main_goal_thumbnail,
     $search = '';
 
     protected $paginationTheme = 'bootstrap';
 
     protected $rules = [
-        'main_goal' => 'required|regex:/^[A-Za-z\s]+$/'
+        'main_goal' => 'required|regex:/^[A-Za-z\s]+$/',
+        'main_goal_gender' => 'required|regex:/^[A-Za-z\s]+$/',
+        'main_goal_thumbnail' => 'required|image|max:50'
     ];
 
     protected $messages = [
@@ -36,6 +41,8 @@ class ManageMainGoals extends Component
         $this->resetAllErrors();
         $this->main_goal_id = '';
         $this->main_goal = '';
+        $this->main_goal_gender = '';
+        $this->main_goal_thumbnail = '';
     }
 
     public function resetAllErrors()
@@ -50,6 +57,8 @@ class ManageMainGoals extends Component
         if ($data) {
             $this->main_goal_id = $data->id;
             $this->main_goal = $data->name;
+            $this->main_goal_gender = $data->gender;
+            $this->main_goal_thumbnail = $data->thumbnail_url;
             $this->dispatchBrowserEvent('show-modal', ['id' => 'editModal']);
         } else {
             session()->flash('error', config('messages.NO_RECORD'));
@@ -66,7 +75,7 @@ class ManageMainGoals extends Component
         $this->validate();
         try {
             /* Perform some operation */
-            $inserted = MainGoal::insertInfo($this->main_goal);
+            $inserted = MainGoal::insertInfo($this->main_goal, $this->main_goal_gender, $this->main_goal_thumbnail);
             /* Operation finished */
             $this->resetModal();
             sleep(1);
@@ -87,7 +96,7 @@ class ManageMainGoals extends Component
         $this->validate();
         try {
             /* Perform some operation */
-            $updated = MainGoal::updateInfo($this->main_goal_id, $this->main_goal);
+            $updated = MainGoal::updateInfo($this->main_goal_id, $this->main_goal, $this->main_goal_gender, $this->main_goal_thumbnail);
             /* Operation finished */
             $this->resetModal();
             sleep(1);
@@ -131,7 +140,7 @@ class ManageMainGoals extends Component
      */
     public function submitForm($form_name)
     {
-        $this->$form_name();
+        $this->{$form_name}();
     }
 
     public function updatingSearch()

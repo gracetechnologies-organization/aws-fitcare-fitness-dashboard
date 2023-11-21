@@ -48,13 +48,13 @@
                     </a>
                     <ul class="menu-inner menu-sub-items" style="display:none;">
                         <li class="menu-item ms-4 @if (Route::current()->uri == 'emp/main-goals') active @endif">
-                            <a href="{{ route('emp.focused_areas') }}" class="menu-link">
+                            <a href="{{ route('emp.main_goals') }}" class="menu-link">
                                 <i class="menu-icon fa-solid fa-bullseye fa-beat-fade"></i>
                                 <div>Main Goals</div>
                             </a>
                         </li>
                         <li class="menu-item ms-4 @if (Route::current()->uri == 'emp/plans') active @endif">
-                            <a href="{{ route('emp.workouts') }}" class="menu-link">
+                            <a href="{{ route('emp.plans') }}" class="menu-link">
                                 <i class="menu-icon fa-regular fa-calendar-days fa-beat-fade"></i>
                                 <div>Plans</div>
                             </a>

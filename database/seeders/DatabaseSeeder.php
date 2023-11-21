@@ -21,7 +21,9 @@ class DatabaseSeeder extends Seeder
             FocusedAreaSeeder::class,
             WorkoutSeeder::class,
             WorkoutFocusedAreaSeeder::class,
-            WeekSeeder::class
+            WeekSeeder::class,
+            MainGoalSeeder::class,
+            PlanSeeder::class
         ]);
     }
 }
