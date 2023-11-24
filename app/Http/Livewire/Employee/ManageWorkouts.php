@@ -7,7 +7,6 @@ use App\Models\FocusedArea;
 use App\Models\Workout;
 use App\Services\ArrayManipulationClass;
 use Exception;
-use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -29,7 +28,7 @@ class ManageWorkouts extends Component
 
     protected $rules = [
         'workout_thumbnail' => 'required|image|max:50',
-        'workout' => 'required|unique:workouts,name|regex:/^[A-Za-z\s]+$/',
+        'workout' => 'required|unique:workouts,name',
         'workout_gender' => 'required|regex:/^[A-Za-z\s]+$/',
         'workout_focused_areas' => 'required|array'
     ];

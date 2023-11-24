@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('workouts', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 30);
+            $table->string('name');
             $table->string('gender', 6);
             $table->text('thumbnail_url');
             $table->timestamps();
