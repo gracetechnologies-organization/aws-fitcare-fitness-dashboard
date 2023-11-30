@@ -5,7 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-class VideoManipulationClass
+final class VideoManipulationClass
 {
     public static function getVideoURL(object $video, string $path)
     {

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class CustomResponseClass
+final class CustomResponseClass
 {
     public static function JsonResponse($data = [], $success = null, $message = '', $http_code = 500)
     {

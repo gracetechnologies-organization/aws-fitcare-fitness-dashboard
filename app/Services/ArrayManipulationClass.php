@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Database\Eloquent\Collection;
 
-class ArrayManipulationClass
+final class ArrayManipulationClass
 {
     /**
      * These methods will return the given collection

@@ -360,7 +360,7 @@ class ManageActiveExercises extends Component
         try {
             /* Perform some operation */
             $updated = Exercise::where('id', '=', $this->ex_id)
-                ->update(['ex_thumbnail_url' => $this->getImgURL()]);
+                ->update(['ex_thumbnail_url' => ImageManipulationClass::getImgURL($this->ex_thumbnail, 'images/exercises')]);
             /* Operation finished */
             sleep(1);
             if ($updated) {
@@ -380,7 +380,7 @@ class ManageActiveExercises extends Component
         try {
             /* Perform some operation */
             $updated = Exercise::where('id', '=', $this->ex_id)
-                ->update(['ex_video_url' => $this->getVideoURL()]);
+                ->update(['ex_video_url' => VideoManipulationClass::getVideoURL($this->ex_video, 'videos/exercises')]);
             /* Operation finished */
             sleep(1);
             if ($updated) {

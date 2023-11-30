@@ -5,7 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
-class ImageManipulationClass
+final class ImageManipulationClass
 {
     public static function getImgURL(object $image, string $path)
     {

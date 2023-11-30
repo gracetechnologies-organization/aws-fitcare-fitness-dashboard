@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class PaginationManipulationClass
+final class PaginationManipulationClass
 {
     public static function getPaginationKeys(object $Paginator)
     {
