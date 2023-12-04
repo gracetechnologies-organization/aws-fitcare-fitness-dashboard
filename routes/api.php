@@ -35,9 +35,7 @@ Route::prefix('exercises')->middleware('auth.api.reqs')->group(function () {
     // Route::get('/category/{cat_id}', [ExercisesController::class, 'listAllDataByCatId']);
 });
 
-Route::prefix('cache')->group(function () {
-    Route::get('/destroy', [CacheController::class, 'destroy']);
-});
+Route::get('cache/destroy', [CacheController::class, 'destroy']);
 
 // fallback for 404 URL's
 Route::fallback(function () {
