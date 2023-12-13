@@ -70,10 +70,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        'apps' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Category::class,
-        ]
+        // 'apps' => [
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\Category::class,
+        // ]
     ],
 
     /*

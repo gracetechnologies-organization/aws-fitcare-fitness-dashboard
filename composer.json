@@ -10,7 +10,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/breeze": "1.9.4",
         "laravel/framework": "^9.0",
-        "laravel/sanctum": "^2.11",
+        "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.5",
         "lcobucci/jwt": "4.2.1",
         "livewire/livewire": "^2.11",

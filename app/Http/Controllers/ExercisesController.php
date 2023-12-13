@@ -19,18 +19,18 @@ class ExercisesController extends Controller
     public function list(Request $req)
     {
         try {
-            $Validator = Validator::make($req->all(), [
+            $validator = Validator::make($req->all(), [
                 'workout_id' => 'required|integer',
                 'level_id' => 'integer',
                 'week_id' => 'integer',
                 'from_day' => 'integer',
                 'till_day' => 'integer'
             ]);
-            if ($Validator->fails()) {
+            if ($validator->fails()) {
                 return CustomResponseClass::JsonResponse(
                     [],
                     config('messages.FAILED_CODE'),
-                    $Validator->errors(),
+                    $validator->errors(),
                     config('messages.HTTP_UNPROCESSABLE_DATA')
                 );
             }

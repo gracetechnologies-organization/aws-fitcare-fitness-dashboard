@@ -25,6 +25,8 @@ return [
     'TOKEN_RESET_SUCCESS' => 'Token reset successfully.',
     'TOKEN_DESTROYED_SUCCESS' => 'Token has been destroyed successfully.',
     'CACHE_DESTROYED_SUCCESS' => 'All cached data by your application has been removed seccessfully.',
+    'PASSWORD_RESET_EMAIL_SUCCESS' => 'A password reset email has been sent to you with the OTP.',
+    'OTP_VERIFICATION_SUCCESS' => 'OTP verified.',
     /* Failure Constants */
     'INSERTION_FAILED' => 'Failed to insert data.',
     'UPDATION_FAILED' => 'Failed to update data.',

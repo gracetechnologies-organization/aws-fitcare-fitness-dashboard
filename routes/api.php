@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\CustomUserAuthSystem\ForgotPasswordController;
+use App\Http\Controllers\Api\CustomUserAuthSystem\LoginController;
+use App\Http\Controllers\Api\CustomUserAuthSystem\RegisterController;
+use App\Http\Controllers\Api\CustomUserAuthSystem\ResetPasswordController;
 use App\Http\Controllers\ExercisesController;
 use App\Http\Controllers\FocusedAreasController;
 use App\Http\Controllers\CacheController;
@@ -16,6 +20,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::prefix('custom/auth')->group(function () {
+    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/forgot-password/send/email', [ForgotPasswordController::class, 'sendForgotPasswordEmail']);
+    Route::post('/forgot-password/verify/otp', [ForgotPasswordController::class, 'verifyOtp']);
+    Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);
+});
+
 Route::prefix('focused_areas')->group(function () {
     Route::get('/', [FocusedAreasController::class, 'list']);
 });
