@@ -101,6 +101,30 @@ class Workout extends Model
         return self::with('focused_areas')->where('id', '=', $id)->first();
     }
 
+    public static function getInfoByParamsForApi(array $focused_areas_ids, string $gender)
+    {
+        return self::select(
+            'workouts.id as workout_id',
+            'workouts.name as workout_name',
+            'workouts.gender as workout_gender',
+            'workouts.thumbnail_url as workout_thumbnail_url',
+            'workouts.created_at',
+            'levels.id as level_id',
+            'levels.name as level_name',
+            'weeks.id as week_id',
+            'weeks.name as week_name'
+        )
+            ->join('exercise_relations', 'workouts.id', '=', 'exercise_relations.workout_id')
+            ->join('workout_focused_areas', 'workouts.id', '=', 'workout_focused_areas.workout_id')
+            ->join('levels', 'exercise_relations.level_id', '=', 'levels.id')
+            ->join('weeks', 'exercise_relations.week_id', '=', 'weeks.id')
+            ->where('workouts.gender', '=', $gender)
+            ->whereIn('workout_focused_areas.focused_area_id', $focused_areas_ids)
+            ->distinct()
+            ->orderBy('workouts.created_at', 'desc')
+            ->get();
+    }
+
     public static function getPaginatedInfoByParamsForApi(array $focused_areas_ids, string $gender)
     {
         return self::select(

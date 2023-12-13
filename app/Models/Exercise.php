@@ -128,20 +128,20 @@ class Exercise extends Model
                         ->where('till_day', '>=', $till_day);
                 });
         })
-            ->with([
-                'exerciseRelations' => function ($query) use ($workout_id) {
-                    $query->where('workout_id', $workout_id);
-                },
-                'workouts' => function ($query) use ($workout_id) {
-                    $query->where('workout_id', $workout_id)->distinct();
-                },
-                'levels' => function ($query) use ($workout_id) {
-                    $query->where('workout_id', $workout_id)->distinct();
-                },
-                'weeks' => function ($query) use ($workout_id) {
-                    $query->where('workout_id', $workout_id);
-                }
-            ])
+            // ->with([
+            //     'exerciseRelations' => function ($query) use ($workout_id) {
+            //         $query->where('workout_id', $workout_id);
+            //     },
+            //     'workouts' => function ($query) use ($workout_id) {
+            //         $query->where('workout_id', $workout_id)->distinct();
+            //     },
+            //     'levels' => function ($query) use ($workout_id) {
+            //         $query->where('workout_id', $workout_id)->distinct();
+            //     },
+            //     'weeks' => function ($query) use ($workout_id) {
+            //         $query->where('workout_id', $workout_id);
+            //     }
+            // ])
             ->where('is_active', 1)
             ->orderByDesc('created_at')
             ->get();

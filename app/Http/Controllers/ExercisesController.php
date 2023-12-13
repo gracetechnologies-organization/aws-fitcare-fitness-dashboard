@@ -12,30 +12,6 @@ use Illuminate\Support\Facades\Validator;
 class ExercisesController extends Controller
 {
     /**
-     * List all data for Neck Workout App
-     * @return \Illuminate\Http\JsonResponse
-     * @author Muhammad Abdullah Mirza
-     */
-    // public function listAllDataNeckWorkout()
-    // {
-    //     try {
-    //         return CustomResponseClass::JsonResponse(
-    //             $data = Exercise::fetchAllNeckWorkouts(),
-    //             config('messages.SUCCESS_CODE'),
-    //             (empty($data)) ? config('messages.NO_RECORD') : '',
-    //             config('messages.HTTP_SUCCESS_CODE')
-    //         );
-    //     } catch (Exception $error) {
-    //         report($error);
-    //         return CustomResponseClass::JsonResponse(
-    //             [],
-    //             config('messages.FAILED_CODE'),
-    //             $error->getMessage(),
-    //             config('messages.HTTP_SERVER_ERROR_CODE')
-    //         );
-    //     }
-    // }
-    /**
      * List all data for any provided params 
      * @return \Illuminate\Http\JsonResponse
      * @author Muhammad Abdullah Mirza
@@ -67,13 +43,15 @@ class ExercisesController extends Controller
                     'ex_description' => $single_exercise->ex_description,
                     'ex_duration' => $single_exercise->ex_duration,
                     'ex_gender' => $single_exercise->ex_gender,
-                    'video_thumbnail' => asset('uploads/images/exercises/' . $single_exercise->ex_thumbnail_url),
-                    'video_url_path' => asset('uploads/videos/exercises/' . $single_exercise->ex_video_url),
+                    // 'video_thumbnail' => asset('uploads/images/exercises/' . $single_exercise->ex_thumbnail_url),
+                    // 'video_url_path' => asset('uploads/videos/exercises/' . $single_exercise->ex_video_url),
+                    'video_thumbnail' => 'https://thefitcarefitness-bucket.s3.ap-south-1.amazonaws.com/images/exercises/' . $single_exercise->ex_thumbnail_url,
+                    'video_url_path' => 'https://thefitcarefitness-bucket.s3.ap-south-1.amazonaws.com/videos/exercises/' .  $single_exercise->ex_video_url,
                     'is_active' => $single_exercise->is_active,
-                    'workouts' => ArrayManipulationClass::getWorkoutsArray($single_exercise->workouts),
-                    'levels' => ArrayManipulationClass::getLevelsArray($single_exercise->levels),
-                    'weeks' => ArrayManipulationClass::getWeeksArray($single_exercise->weeks),
-                    'days' => ArrayManipulationClass::getDaysArray($single_exercise->exerciseRelations)
+                    // 'workouts' => ArrayManipulationClass::getWorkoutsArray($single_exercise->workouts),
+                    // 'levels' => ArrayManipulationClass::getLevelsArray($single_exercise->levels),
+                    // 'weeks' => ArrayManipulationClass::getWeeksArray($single_exercise->weeks),
+                    // 'days' => ArrayManipulationClass::getDaysArray($single_exercise->exerciseRelations)
                 ];
             }
             return CustomResponseClass::JsonResponse(

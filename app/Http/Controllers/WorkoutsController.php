@@ -19,16 +19,11 @@ class WorkoutsController extends Controller
     public function list(Request $req)
     {
         try {
-            // dd($req->focused_areas_ids);
             $validator = Validator::make($req->all(), [
                 'id' => 'integer',
                 'focused_areas_ids' => 'array',
                 'gender' => 'required|string|regex:/^[A-Za-z\s]+$/',
             ]);
-            // $customMessages = [
-            //     'gender.required_if' => 'The gender field is required when a focused area is specified.',
-            // ];
-            // $validator->setCustomMessages($customMessages);
             if ($validator->fails()) {
                 return CustomResponseClass::JsonResponse(
                     [],
@@ -71,7 +66,7 @@ class WorkoutsController extends Controller
             }
 
             if ($req->focused_areas_ids) {
-                $workouts = Workout::getPaginatedInfoByParamsForApi($req->focused_areas_ids, $req->gender);
+                $workouts = Workout::getInfoByParamsForApi($req->focused_areas_ids, $req->gender);
                 $data = $workouts->groupBy('workout_id')->map(function ($workout) {
                     return [
                         'id' => $workout[0]->workout_id,
@@ -92,14 +87,20 @@ class WorkoutsController extends Controller
                         })->values(),
                     ];
                 });
-                return CustomResponseClass::JsonResponseExtention(
+                return CustomResponseClass::JsonResponse(
                     ($data->isEmpty()) ? [] : $data->values(),
                     config('messages.SUCCESS_CODE'),
                     ($data->isEmpty()) ? config('messages.NO_RECORD') : '',
-                    'pagination',
-                    ($data->isEmpty()) ? [] : PaginationManipulationClass::getPaginationKeys($workouts),
                     config('messages.HTTP_SUCCESS_CODE')
                 );
+                // return CustomResponseClass::JsonResponseExtention(
+                //     ($data->isEmpty()) ? [] : $data->values(),
+                //     config('messages.SUCCESS_CODE'),
+                //     ($data->isEmpty()) ? config('messages.NO_RECORD') : '',
+                //     'pagination',
+                //     ($data->isEmpty()) ? [] : PaginationManipulationClass::getPaginationKeys($workouts),
+                //     config('messages.HTTP_SUCCESS_CODE')
+                // );
             }
 
             $workouts = Workout::getPaginatedInfoForApi();
