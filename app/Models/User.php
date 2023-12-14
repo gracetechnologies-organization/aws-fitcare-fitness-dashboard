@@ -90,6 +90,11 @@ class User extends Authenticatable implements JWTSubject
         ]);
     }
 
+    public static function updatePassword(int $id, string $password)
+    {
+        return self::where('id', $id)->update(['password' => Hash::make($password)]);
+    }
+
     public static function getInfoByEmail(string $email)
     {
         return self::where('email', $email)->first();
