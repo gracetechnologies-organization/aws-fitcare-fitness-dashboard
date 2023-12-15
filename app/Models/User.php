@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ResetPasswordEmail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -71,9 +72,9 @@ class User extends Authenticatable implements JWTSubject
     | Built-In Helpers
     |--------------------------------------------------------------------------
     */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($otp) : void
     {
-        $this->notify(new ResetPasswordNotification($token));
+        $this->notify(new ResetPasswordEmail($otp));
     }
     /*
     |--------------------------------------------------------------------------

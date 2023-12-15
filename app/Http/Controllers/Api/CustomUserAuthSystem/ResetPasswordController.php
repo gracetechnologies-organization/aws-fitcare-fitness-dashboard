@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\CustomUserAuthSystem;
 
 use App\Http\Controllers\Controller;
+use App\Models\Otp;
 use App\Models\User;
 use App\Services\CustomResponseClass;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRules;
 use Illuminate\Support\Facades\Validator;
@@ -32,14 +32,13 @@ class ResetPasswordController extends Controller
                 );
             }
             $user = User::getInfoByEmail($req->email);
-            if (!$user || !Password::tokenExists($user, $req->otp)) {
+            if (!Otp::verifyInfo($req->email, $req->otp)) {
                 throw ValidationException::withMessages([
                     'error' => ['Sorry! We cannot reset the password because the OTP is invalid.']
                 ]);
             }
             User::updatePassword($user->id, $req->password);
-            // Revoke the password reset token
-            Password::deleteToken($user);
+            Otp::deleteInfoByEmail($req->email);
             return CustomResponseClass::JsonResponse(
                 [],
                 config('messages.SUCCESS_CODE'),

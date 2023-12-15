@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CustomUserAuthSystem\ResetPasswordController;
 use App\Http\Controllers\ExercisesController;
 use App\Http\Controllers\FocusedAreasController;
 use App\Http\Controllers\CacheController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\WorkoutsController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('custom/auth')->group(function () {
     Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth:sanctum');
     Route::post('/forgot-password/send/email', [ForgotPasswordController::class, 'sendForgotPasswordEmail']);
     Route::post('/forgot-password/verify/otp', [ForgotPasswordController::class, 'verifyOtp']);
     Route::post('/reset-password', [ResetPasswordController::class, 'resetPassword']);

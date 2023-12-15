@@ -42,9 +42,10 @@ return [
         ],
 
         'api' => [
-            'driver' => 'jwt',
-            'provider' => 'apps',
-        ],
+            'driver' => 'sanctum',
+            'provider' => 'api',
+            'hash' => false,
+        ]
     ],
 
     /*
@@ -70,10 +71,10 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        // 'apps' => [
-        //     'driver' => 'eloquent',
-        //     'model' => App\Models\Category::class,
-        // ]
+        'api' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
     ],
 
     /*

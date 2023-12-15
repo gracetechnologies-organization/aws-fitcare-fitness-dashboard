@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\CustomUserAuthSystem;
 
 use App\Http\Controllers\Controller;
+use App\Models\Otp;
 use App\Models\User;
 use App\Services\CustomResponseClass;
 use Exception;
@@ -30,9 +31,11 @@ class ForgotPasswordController extends Controller
             }
             $user = User::getInfoByEmail($req->email);
             if ($user) {
-                $token = Password::createToken($user);
+                // $token = Password::createToken($user);
+                $otp = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                Otp::insertOrUpdateInfo($req->email, $otp);
                 // Send the email with the token
-                $user->sendPasswordResetNotification($token);
+                $user->sendPasswordResetNotification($otp);
                 return CustomResponseClass::JsonResponse(
                     [],
                     config('messages.SUCCESS_CODE'),
@@ -71,7 +74,7 @@ class ForgotPasswordController extends Controller
                 );
             }
             $user = User::getInfoByEmail($req->email);
-            if ($user && Password::tokenExists($user, $req->otp)) {
+            if ($user && Otp::verifyInfo($req->email, $req->otp)) {
                 return CustomResponseClass::JsonResponse(
                     [],
                     config('messages.SUCCESS_CODE'),
