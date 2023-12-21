@@ -40,7 +40,7 @@ class LoginController extends Controller
             }
 
             throw ValidationException::withMessages([
-                'error' => ['The provided credentials are incorrect.'],
+                'error' => ['The provided credentials are incorrect.']
             ]);
         } catch (Exception $error) {
             report($error);
